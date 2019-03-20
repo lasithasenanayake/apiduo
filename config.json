@@ -6,7 +6,8 @@
         "AUTH_URL" : "http://localhost:9000",
         "MAIN_STORE_DOMAIN":"demo.raha.lk",
         "MAPS_APIKEY":"AIzaSyCKsfJwJG7pfmMPXYXZyex8gtj_dw2mqro",
-        "SQL_CONNECTION_PATH":"D:\\xampp\\htdocs\\apiduo\\connections\\"
+        "SQL_CONNECTION_PATH":"D:\\xampp\\htdocs\\apiduo\\connections\\",
+        "BO_PATH":"D:\\xampp\\htdocs\\apiduo\\business_objects\\"
     },
     "alias":{
         "localhost":["127.0.0.1"]

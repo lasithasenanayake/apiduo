@@ -8,7 +8,7 @@
         "events":{
             "onStartup":{
                 "admin" : "dock",
-                "default" : "raha"
+                "default" : "dock"
             }
         }
     }
