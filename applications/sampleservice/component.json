@@ -1,0 +1,26 @@
+{
+    "name" : "sampleservice",
+    "description":"Vue.JS Plugin for Soss Router",
+    "author":"Supun Dissanayake",
+    "version" : "0.1",
+    "gitUrl" : "",
+    "resources": {
+        "files":[
+            {
+                "type" : "mainScript",
+                "location" : "script.js"
+            }
+        ]
+    },
+    "serviceHandler" : {
+        "file": "service.php",
+        "class": "SearchServices",
+        "methods" : {
+            "q" : {
+                "method" : "POST"
+            },"qcrossdomain" : {
+                "method" : "POST"
+            }
+        }
+    }    
+}

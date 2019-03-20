@@ -1,0 +1,15 @@
+{
+    "apps":{
+        "sampleservice":{
+            "version":"latest"
+        }
+    },
+    "webdock":{
+        "events":{
+            "onStartup":{
+                "admin" : "dock",
+                "default" : "raha"
+            }
+        }
+    }
+}
