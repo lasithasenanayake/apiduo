@@ -2,11 +2,21 @@
 
 class ConfigurationManager {
 
-    private $globalConfig;
+    private $globalConfig ;
 
+    public function __construct() {
+        
+    }
 
-    public function getTenantConfiguration($tenant){
+    public function getTenantConfiguration(){
+        if (!isset($this->globalConfig)){
+            $this->globalConfig = $this->getGlobalConfiguration();
+        }
 
+        $tenantConfig = TENANT_RESOURCE_PATH . "/tenant.yml";
+        $tenantConfigData = yaml_parse_file($tenantConfig);
+
+        return $this->mergeConfiguration($tenantConfigData);
     }
 
     public function getGlobalConfiguration(){
@@ -14,13 +24,12 @@ class ConfigurationManager {
     }
 
     public function getMainConfiguration(){
-        if (!isset($this->$globalConfig)){
-            $this->globalConfig = $this->getGlobalConfiguration();
-        }
+
     }
 
-    private function mergeConfiguration(){
-
+    private function mergeConfiguration($tenantConfig){
+        //inherit global configuration
+        return $tenantConfig;
     }
 
 

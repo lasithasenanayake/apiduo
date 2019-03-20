@@ -1,0 +1,9 @@
+views:
+    testView:  
+      route: /test
+      method: GET
+      urn: file:test.php
+    testView2:
+      route: /test2
+      method: GET
+      urn: file:test.php
