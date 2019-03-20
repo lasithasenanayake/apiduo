@@ -3,7 +3,7 @@ views:
       route: /test
       method: GET
       urn: file:test.php
-    testView2:
-      route: /test2
+    sqlView:
+      route: /lco
       method: GET
-      urn: file:test.php
+      urn: file:lcoservice.php
