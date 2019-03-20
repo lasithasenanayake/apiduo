@@ -9,10 +9,8 @@ class SQLDataConnector {
         if( $this->dbcon ) {
             //echo "Connection established.<br />";
         }else{
-            //var_dump(sqlsrv_errors()[0]["message"]);
-            throw new Exception(sqlsrv_errors()[0]["message"]);
-            //echo "Connection could not be established.<br />";
-            //die( print_r( sqlsrv_errors(), true));
+            echo "Connection could not be established.<br />";
+            die( print_r( sqlsrv_errors(), true));
         }
     }
 
@@ -30,7 +28,8 @@ class SQLDataConnector {
             return $objectlist;
 
         }else{
-            throw new Exception(sqlsrv_errors()[0]["message"]);
+            echo "Connection could not be established.<br />";
+            die( print_r( sqlsrv_errors(), true));
         }
     }
 
@@ -38,7 +37,8 @@ class SQLDataConnector {
         if( $this->dbcon ){
             sqlsrv_close( $this->dbcon );
         }else{
-            throw new Exception("No Connection to Close.");
+            echo "Connection is not valied<br />";
+            die( print_r( sqlsrv_errors(), true));
         }
     }
 
