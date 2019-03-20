@@ -40,7 +40,7 @@ class Context {
     }
 
     public function resolve($urn){
-        $unit = DavvagApiManager::$resolver->resolve ($view["urn"], $this);
+        $unit = DavvagApiManager::$resolver->resolve ($urn, $this);
         return $unit;
     }
 }

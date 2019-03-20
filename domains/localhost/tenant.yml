@@ -1,9 +1,19 @@
 views:
-    testView:  
-      route: /test
-      method: GET
-      urn: file:test.php
-    sqlView:
-      route: /lco
-      method: GET
-      urn: file:lcoservice.php
+
+  testView:  
+    route: /test
+    method: GET
+    urn: file:test.php
+
+    getLcoBalance:
+    route: /lco/balance/@lcocode
+    method: GET
+    urn: file:lco/get_balance.php
+
+
+configuration:
+  mssql:
+    servername: DESKTOP-OMSAEDN\\SQLEXPRESS
+    username: sa
+    password: sa123
+    dbname: dendb

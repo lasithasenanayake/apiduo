@@ -15,6 +15,7 @@ class DavvagApiManager {
     public static $mainConfig;
     public static $dispatcher;
     public static $resolver;
+    public static $tenantConfiguration;
 
     public static function start(){
         DavvagApiManager::$configurationManager = new ConfigurationManager();
@@ -22,6 +23,7 @@ class DavvagApiManager {
         DavvagApiManager::$dispatcher = new Dispatcher();
         DavvagApiManager::$resolver = new UrnResolver();
         DavvagApiManager::$mainConfig = DavvagApiManager::$configurationManager->getMainConfiguration();
+        DavvagApiManager::$tenantConfiguration = DavvagApiManager::$configurationManager->getTenantConfiguration();
 
         DavvagApiManager::$routeManager->loadTenantRoutes();
 
