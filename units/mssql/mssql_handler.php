@@ -4,10 +4,9 @@ class MsSqlHandler extends AbstractUnit {
     private $dbcon;
     
     public function Open(){
-        $conObj = DavvagApiManager::$tenantConfiguration["configuration"]["mssql"];
+        $connectionInfo = DavvagApiManager::$tenantConfiguration["configuration"]["mssql"];
 
-        $connectionInfo = array( "Database"=>$conObj["dbname"], "UID"=>$conObj["username"], "PWD"=>$conObj["password"]);
-        $this->dbcon= sqlsrv_connect( $conObj["servername"], $connectionInfo);
+        $this->dbcon= sqlsrv_connect( $connectionInfo["servername"], $connectionInfo["parameters"]);
         if( $this->dbcon ) {
             //echo "Connection established.<br />";
         }else{
