@@ -6,4 +6,5 @@
     $sql->Open("dentest");
     $lco=new lcoLedger($sql);
     echo $lco->GetBalance($_GET["lcocode"]);
+    $sql->Close();
 ?>
