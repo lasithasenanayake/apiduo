@@ -5,10 +5,14 @@ class Context {
     private $request;
     private $response;
     private $source;
+    private $viewName;
+    private $viewData;
 
-    public function __construct($request,$response) {
+    public function __construct($request,$response,$viewName, $viewData) {
         $this->request = $request;
         $this->response = $response;
+        $this->viewName = $viewName;
+        $this->viewData =  $viewData;
     }
 
     public function getRequest(){
@@ -25,6 +29,14 @@ class Context {
 
     public function getSource(){
         return $this->source;
+    }
+
+    public function getViewName (){
+        return $this->viewName;
+    }
+
+    public function getViewData(){
+        return $this->viewData;
     }
 
     public function resolve($urn){

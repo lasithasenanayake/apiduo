@@ -32,7 +32,7 @@ abstract class AbstractUnit {
     }
 
     public function getOutput(){
-        return $this->success;
+        return $this->output;
     }
 
     public function getContext(){

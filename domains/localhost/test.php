@@ -1,6 +1,5 @@
 <?php
 
 return function($context, $input){
-
-    $tmp = 1;
+    return "Works!!!";
 };
