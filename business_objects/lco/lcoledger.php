@@ -21,10 +21,10 @@ Class lcoLedger{
     private function GetGULCOID($lcocode){
         $sql="SELECT GULCOID FROM m_CODealerMaster  WHERE LCOCode = '".$lcocode."'";
         $dbobj= $this->sqlCon->getQuery($sql);
-        if($dbobj[0]->GULCOID){
+        if(count($dbobj)>0){
             return $dbobj[0]->GULCOID;
         }else{
-            return '';
+            throw new Exception('LCO was not found');
         }
 
     }
