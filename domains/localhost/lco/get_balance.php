@@ -13,6 +13,7 @@ function GetGULCOID($sqlUnit, $lcocode){
 }
 
 return function($context){
+    try{
     $request = $context->getRequest();
     $lcocode = $request->Params()->lcocode;
     $sqlUnit = $context->resolve("mssql:query");
@@ -25,5 +26,8 @@ return function($context){
         return $dbobj[0]->OpeningBalance;
     }else{
         return 0;
+    }
+    }catch(Exception $e){
+        return $e;
     }
 };
