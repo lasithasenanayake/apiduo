@@ -39,6 +39,8 @@ class MsSqlHandler extends AbstractUnit {
                 return $this->update();
             case "delete":
                 return $this->delete();
+            case "excute":
+                return $this->excute();
         }
 
     }
@@ -52,6 +54,10 @@ class MsSqlHandler extends AbstractUnit {
     }
 
     public function delete(){
+
+    }
+
+    public function excute(){
 
     }
 
