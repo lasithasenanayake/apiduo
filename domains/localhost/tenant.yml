@@ -13,8 +13,8 @@ views:
 
 configuration:
   mssql:
-    servername: DESKTOP-OMSAEDN\\SQLEXPRESS
+    servername: 172.16.8.54
     parameters:
       UID: sa
-      PWD: sa123
+      PWD: p@ssw0rd
       Database: dendb
