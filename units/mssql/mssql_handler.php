@@ -5,7 +5,7 @@ class MsSqlHandler extends AbstractUnit {
     
     public function Open(){
         if(!$this->dbcon){
-            echo "open";
+            //echo "open";
             $connectionInfo = DavvagApiManager::$tenantConfiguration["configuration"]["mssql"];
 
             $this->dbcon= sqlsrv_connect( $connectionInfo["servername"], $connectionInfo["parameters"]);
@@ -69,10 +69,12 @@ class MsSqlHandler extends AbstractUnit {
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
             $objectlist = array();
-            if(sqlsrv_execute($stmt)){
+            $result =sqlsrv_execute($stmt);
+            if( $result){
+                //var_dump($stmt);
                 while($res = sqlsrv_fetch_object($stmt)){
                 // make sure all result sets are stepped through, since the output params may not be set until this happens
-                array_push($objectlist,$res);
+                    array_push($objectlist,$res);
                 }
                 // Output params are now set,
                 $input->results=$objectlist;
