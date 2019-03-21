@@ -2,8 +2,9 @@
 
 return function ($context){
     $request = $context->getRequest();
+    //echo $request->Body();
     $body=json_decode($request->Body());
-    var_dump($body);
+    //var_dump($body);
     $callsp =new stdClass();
     $callsp->name="samplesp";
     $callsp->sql="EXEC stp_Create_Item @VALIN = ?, @VALOUT = ?";
