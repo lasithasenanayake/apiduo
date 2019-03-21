@@ -14,19 +14,19 @@ function GetGULCOID($sqlUnit, $lcocode){
 
 return function($context){
     try{
-    $request = $context->getRequest();
-    $lcocode = $request->Params()->lcocode;
-    $sqlUnit = $context->resolve("mssql:query");
-    //echo $lcocode;
-    $sql="SELECT Top (1) OpeningBalance,TranDateTime FROM a_LCOLedger  WHERE GULCOID = '". GetGULCOID($sqlUnit, $lcocode)."' ORDER BY ID DESC";
-    
-    $dbobj= $sqlUnit->process($sql);
-    $sqlUnit->Close();
-    if(count($dbobj)>0){
-        return $dbobj[0]->OpeningBalance;
-    }else{
-        return 0;
-    }
+        $request = $context->getRequest();
+        $lcocode = $request->Params()->lcocode;
+        $sqlUnit = $context->resolve("mssql:query");
+        //echo $lcocode;
+        $sql="SELECT Top (1) OpeningBalance,TranDateTime FROM a_LCOLedger  WHERE GULCOID = '". GetGULCOID($sqlUnit, $lcocode)."' ORDER BY ID DESC";
+        
+        $dbobj= $sqlUnit->process($sql);
+        $sqlUnit->Close();
+        if(count($dbobj)>0){
+            return $dbobj[0]->OpeningBalance;
+        }else{
+            return 0;
+        }
     }catch(Exception $e){
         return $e;
     }
