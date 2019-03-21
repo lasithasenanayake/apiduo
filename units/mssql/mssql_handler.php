@@ -28,8 +28,10 @@ class MsSqlHandler extends AbstractUnit {
         }
     }
 
-    public function process ($input){
-        $operation = $this->getUrnInput();
+    public function process ($input,$operation=null){
+        if(!isset($operation))
+            $operation = $this->getUrnInput();
+        
         switch ($operation){
             case "query":
                 return $this->query($input);
@@ -40,7 +42,7 @@ class MsSqlHandler extends AbstractUnit {
             case "delete":
                 return $this->delete();
             case "excute":
-                return $this->excute();
+                return $this->excute($input);
         }
 
     }
@@ -57,8 +59,28 @@ class MsSqlHandler extends AbstractUnit {
 
     }
 
-    public function excute(){
+    public function excute($input){
+        //$sql = "EXEC stp_Create_Item @Item_ID = ?, @Item_Name = ?";
+        $this->Open();
+        if( $this->dbcon ){
+            $stmt = sqlsrv_prepare($this->dbcon, $input->sql, $input->parameters);
 
+            if( !$stmt ) {
+                throw new Exception(sqlsrv_errors()[0]["message"]);
+            }
+            $objectlist = array();
+            if(sqlsrv_execute($stmt)){
+                while($res = sqlsrv_fetch_object($stmt)){
+                // make sure all result sets are stepped through, since the output params may not be set until this happens
+                array_push($objectlist,$res);
+                }
+                // Output params are now set,
+                $input->results=$objectlist;
+                return $input; 
+            }else{
+                throw new Exception(sqlsrv_errors()[0]["message"]);
+            }
+        }
     }
 
     public function query($input){
