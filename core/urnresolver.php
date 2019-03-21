@@ -8,7 +8,7 @@ class UrnResolver {
 
         $urnParts = explode(":", $urn);
         $unitType = trim($urnParts[0]);
-        $urnInput = trim($urnParts[1]);
+        $urnInput = sizeof($urnParts) == 1 ? null : trim($urnParts[1]);
 
         $unit;
         switch ($unitType) {
@@ -19,6 +19,10 @@ class UrnResolver {
             case "mssql":
                 require_once(UNIT_PATH . "/mssql/mssql_handler.php");
                 $unit = new MsSqlHandler();
+                break;
+            case "mssqlfactory":
+                require_once(UNIT_PATH . "/mssql/mssql_factory.php");
+                $unit = new MsSqlFactoryHandler();
                 break;
         }
 

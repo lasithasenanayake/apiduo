@@ -43,6 +43,7 @@ class Carbite {
 	static $cbf,$cbp, $cbfil, $gfil;
 	static $rParts;
 	static $m, $p, $opts;
+	static $evts = [];
 
 	public static function GET ($p, $f, $fil=null) {self::chk("GET", $p, $f, $fil);}
 	public static function POST ($p, $f, $fil=null) {self::chk("POST", $p, $f, $fil);}
@@ -57,6 +58,26 @@ class Carbite {
 			foreach ($f as $f1)
 				array_push(self::$gfil, $f);
 		} else array_push(self::$gfil, $f); 
+	}
+
+	private static function trigger($event, $data=null){
+		if (isset(self::$evts[$event])){
+			foreach (self::$evts[$event] as $handler) {
+				try{
+					$handler($data);
+				}catch (Exception $e){
+
+				}
+				
+			}
+		}
+	}
+
+	public static function AddEvent($event, $handler){
+		if (!isset(self::$evts[$event]))
+			self::$evts[$event] = [];
+
+		array_push(self::$evts[$event], $handler);
 	}
 
 	public static function Reset(){
@@ -83,9 +104,11 @@ class Carbite {
 			$o = self::getAttribute("no404");	
 			if (!isset($o)){
 				http_response_code(404); echo "404 : Not Found :[";
+				self::trigger("notfound");
 			}
 		}
 	}
+
 
 	static function getRoute() {
 		$ru = self::getAttribute("reqUri");
@@ -178,6 +201,7 @@ class Carbite {
 		self::filterEval($req,$res);
 		$f($req, $res);
 		self::out($res);
+		self::trigger("completed");
 		return $res;
 	}
 

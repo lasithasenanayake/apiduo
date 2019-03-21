@@ -1,34 +1,18 @@
 <?php
+
+require_once  dirname(__FILE__) .  "/mssql_connection_pool.php";
+
 class MsSqlHandler extends AbstractUnit {
     
+    private static $connPool;
     private $dbcon;
     
-    public function Open(){
-        if(!$this->dbcon){
-            echo "open";
-            $connectionInfo = DavvagApiManager::$tenantConfiguration["configuration"]["mssql"];
+    public function process ($input){
+        if (!isset(MsSqlHandler::$connPool))
+            MsSqlHandler::$connPool = new MsSqlConnectionPool();
 
-            $this->dbcon= sqlsrv_connect( $connectionInfo["servername"], $connectionInfo["parameters"]);
-            if( $this->dbcon ) {
-                //echo "Connection established.<br />";
-            }else{
-                //var_dump(sqlsrv_errors()[0]["message"]);
-                throw new Exception(sqlsrv_errors()[0]["message"]);
-                //echo "Connection could not be established.<br />";
-                //die( print_r( sqlsrv_errors(), true));
-            }
-        }
-    }
+        $this->dbcon = MsSqlHandler::$connPool->getConnection();
 
-    public function Close(){
-        if( $this->dbcon ){
-            sqlsrv_close( $this->dbcon );
-        }else{
-            throw new Exception("No Connection to Close.");
-        }
-    }
-
-    public function process ($input,$operation=null){
         if(!isset($operation))
             $operation = $this->getUrnInput();
         
@@ -61,7 +45,6 @@ class MsSqlHandler extends AbstractUnit {
 
     public function excute($input){
         //$sql = "EXEC stp_Create_Item @Item_ID = ?, @Item_Name = ?";
-        $this->Open();
         if( $this->dbcon ){
             $stmt = sqlsrv_prepare($this->dbcon, $input->sql, $input->parameters);
 
@@ -84,7 +67,6 @@ class MsSqlHandler extends AbstractUnit {
     }
 
     public function query($input){
-        $this->Open();
         if( $this->dbcon ){
             $objectlist = array();
             //echo $input;
@@ -100,7 +82,7 @@ class MsSqlHandler extends AbstractUnit {
             return $objectlist;
 
         }else{
-            throw new Exception(sqlsrv_errors()[0]["message"]);
+            // /throw new Exception(sqlsrv_errors()[0]["message"]);
         }
     }
 

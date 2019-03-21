@@ -18,12 +18,16 @@ class RouteManager {
                 foreach ($tenantConfig["views"] as $viewName => $view) {
                     $routeHandler = new RouteHandler($viewName, $view);
                     if (isset($view["method"]) && isset($view["route"])){
-                        Carbite::HANDLE($view["method"], $view["route"], [$routeHandler,"handle"]);    
+                        Carbite::HANDLE($view["method"], $view["route"], [$routeHandler,"handle"]);
                     }else {
                         //show error
                         //exit();
                     }
                 }
+                
+                Carbite::AddEvent("completed", function(){
+                    DavvagApiManager::triggerAction("end");
+                });
                
                 Carbite::Start();
 
