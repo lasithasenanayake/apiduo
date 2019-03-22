@@ -63,6 +63,7 @@ class MsSqlHandler extends AbstractUnit {
                 $input->results=$objectlist;
                 return $input; 
             }else{
+                //var_dump(sqlsrv_errors());
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
         }

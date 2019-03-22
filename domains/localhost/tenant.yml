@@ -11,9 +11,9 @@ views:
     urn: file:lco/get_balance.php
 
   getSP:
-    route: /lco/sptest
+    route: /lco/basetarifrenew
     method: POST
-    urn: file:lco/execut_spsample.php
+    urn: file:lco/exe_prepaid_base_tarif.php
 
 
 configuration:
