@@ -10,10 +10,21 @@ views:
     method: GET
     urn: file:lco/get_balance.php
 
+  getLcoBalance:
+    route: /lco/lcobyvcno/@vcno
+    method: GET
+    urn: file:lco/get_lco_obj_byvcno.php
+
+
   getSP:
     route: /lco/basetarifrenew
     method: POST
     urn: file:lco/exe_prepaid_base_tarif.php
+
+  getCalculator:
+    route: /lco/calculateTarif
+    method: POST
+    urn: file:lco/exe_prepaid_price_calculator.php
 
 
 configuration:

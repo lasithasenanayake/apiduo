@@ -7,7 +7,7 @@ class MsSqlConnectionPool {
     public function getConnection(){
         if(!$this->dbcon){
             $connectionInfo = DavvagApiManager::$tenantConfiguration["configuration"]["mssql"];
-
+            //echo "open";
             $this->dbcon= sqlsrv_connect( $connectionInfo["servername"], $connectionInfo["parameters"]);
             if( $this->dbcon ) {
                 //echo "Connection established.<br />";
