@@ -4,7 +4,7 @@ class UrnResolver {
     public function resolve ($urn, $context){
 
         if ($context->getSource() === null)
-            $context->setSource(InvokeSource::$REST_API);
+            $context->setSource(0);
 
         $urnParts = explode(":", $urn);
         $unitType = trim($urnParts[0]);

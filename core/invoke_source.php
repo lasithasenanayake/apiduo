@@ -1,5 +1,5 @@
 <?php
 
 class InvokeSource {
-    public const $REST_API = 0;
+    //public const $REST_API = 0;
 }
