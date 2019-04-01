@@ -18,7 +18,7 @@
         define ("ENTITY", $headers["entity"]);
     }else{
         if(DYNAMIC_CONNECTION){
-            define ("ENTITY", "dendb");
+            define ("ENTITY", "82-dendb");
         }else{
             define ("ENTITY", $_SERVER["HTTP_HOST"]);
         }
