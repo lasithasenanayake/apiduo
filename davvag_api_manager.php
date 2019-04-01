@@ -27,8 +27,18 @@ class DavvagApiManager {
         DavvagApiManager::$mainConfig = DavvagApiManager::$configurationManager->getMainConfiguration();
         DavvagApiManager::$tenantConfiguration = DavvagApiManager::$configurationManager->getTenantConfiguration();
         DavvagApiManager::$eventManager = new EventManager();
-
-        DavvagApiManager::$routeManager->loadTenantRoutes();
+        
+        try{
+            DavvagApiManager::$routeManager->loadTenantRoutes();
+        }catch(Exception $e){
+            $err =new stdClass();
+            $err->success=false;
+            $err->message=$e->getMessage();
+            //var_dump($e);
+            header("HTTP/1.1 501 ERROR");
+            header("content-type: application/json");
+            print_r(json_encode($err));
+        }
 
     }
 

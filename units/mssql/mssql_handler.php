@@ -51,14 +51,18 @@ class MsSqlHandler extends AbstractUnit {
             if( !$stmt ) {
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
-            $objectlist = array();
             $result =sqlsrv_execute($stmt);
+            //var_dump($result);
             if( $result){
-                //var_dump($stmt);
-                while($res = sqlsrv_fetch_object($stmt)){
-                // make sure all result sets are stepped through, since the output params may not be set until this happens
-                    array_push($objectlist,$res);
-                }
+                do
+                {
+                    $objectlist = array();
+                    while($res = sqlsrv_fetch_object($stmt)){
+                        // make sure all result sets are stepped through, since the output params may not be set until this happens
+                            array_push($objectlist,$res);
+                    }
+                } while ( sqlsrv_next_result($stmt) ) ;
+                
                 // Output params are now set,
                 $input->results=$objectlist;
                 return $input; 
@@ -69,10 +73,22 @@ class MsSqlHandler extends AbstractUnit {
         }
     }
 
+    private function GetLastResult($stmt)
+    {
+        $finalResult = false;
+        do
+        {
+                // Use $stmt, e.g. store result in $finalResult to return as the final result 
+                // useful functions: sqlsrv_num_fields, sqlsrv_has_rows, sqlsrv_rows_affected, sqlsrv_fetch_..., etc. 
+        } while ( sqlsrv_next_result($stmt) ) ;
+        return $finalResult; 
+    }
+
     public function query($input){
         if( $this->dbcon ){
             $objectlist = array();
             //echo $input;
+            //var_dump($input)
             $stmt = sqlsrv_query( $this->dbcon, $input);
             if( $stmt === false ) {
                 die( print_r( sqlsrv_errors(), true));
@@ -85,7 +101,7 @@ class MsSqlHandler extends AbstractUnit {
             return $objectlist;
 
         }else{
-            // /throw new Exception(sqlsrv_errors()[0]["message"]);
+            throw new Exception(sqlsrv_errors()[0]["message"]);
         }
     }
 

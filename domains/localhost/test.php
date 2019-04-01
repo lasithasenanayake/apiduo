@@ -1,7 +1,5 @@
 <?php
 
 return function($context){
-    $sqlFactory = $context->resolve ("mssqlfactory");
-    $request = $context->getRequest();
-    return "Works!!!";
+    return "1.0.0.4";
 };

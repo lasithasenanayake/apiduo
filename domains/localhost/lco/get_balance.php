@@ -13,7 +13,7 @@ function GetGULCOID($sqlUnit, $lcocode){
 }
 
 return function($context){
-    try{
+    //try{
         require_once(TENANT_RESOURCE_PATH."/bo_lib/master/lco_op.php");
         $request = $context->getRequest();
         $lcocode = $request->Params()->lcocode;
@@ -21,7 +21,7 @@ return function($context){
         $lco =new lco($sqlUnit);
         $lco->get_lcobycode($lcocode);
         return $lco->get_balance();
-    }catch(Exception $e){
-        return $e;
-    }
+    //}catch(Exception $e){
+        //return $e;
+    //}
 };

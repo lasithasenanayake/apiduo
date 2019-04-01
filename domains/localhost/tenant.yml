@@ -1,7 +1,7 @@
 views:
 
   testView:  
-    route: /test
+    route: /version
     method: GET
     urn: file:test.php
 
@@ -10,11 +10,20 @@ views:
     method: GET
     urn: file:lco/get_balance.php
 
-  getLcoBalance:
+  getLcovcno:
     route: /lco/lcobyvcno/@vcno
     method: GET
     urn: file:lco/get_lco_obj_byvcno.php
 
+  getAccount:
+    route: /account/byvc/@vcno
+    method: GET
+    urn: file:account/account.php
+
+  getAccountRenew:
+    route: /account/renewcalculator/@packagetype/@vcno
+    method: GET
+    urn: file:account/renew_v1.php
 
   getSP:
     route: /lco/basetarifrenew
@@ -25,6 +34,32 @@ views:
     route: /lco/calculateTarif
     method: POST
     urn: file:lco/exe_prepaid_price_calculator.php
+
+  get_rpt_exp_accounts:
+    route: /lco/renew_expiringaccounts/@lcocode/@lastid/@days
+    method: GET
+    urn: file:lco/rpt_lcorenew.php
+
+  get_rpt_lco_accounts:
+    route: /lco/renewboxes/@lcocode/@lastid
+    method: GET
+    urn: file:lco/rpt_lcoboxes.php
+  
+  get_rpt_lco_accounts_v1:
+    route: /lco/accounts_v1/@gulcoid/@cache/@page
+    method: GET
+    urn: file:lco/rpt_lcoboxes_v1.php
+
+  get_rpt_lco_accounts_v1_cache:
+    route: /lco/accounts_v1/cache/@gulcoid/@page
+    method: GET
+    urn: file:lco/rpt_lcoboxes_v1_cacheupdate.php
+
+
+  get_lco_calculation_csv:
+    route: /lco/files/calculation/@lcoid
+    method: GET
+    urn: file:files/lco_renew_recharge.php
 
 
 configuration:

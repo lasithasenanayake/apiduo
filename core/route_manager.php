@@ -11,7 +11,7 @@ class RouteManager {
     private function createRoutesInCarbite(){
         $configManager = DavvagApiManager::$configurationManager;
         $tenantConfig = DavvagApiManager::$tenantConfiguration;
-
+        
         if (isset($tenantConfig)){
             if (isset($tenantConfig["views"])){
                 

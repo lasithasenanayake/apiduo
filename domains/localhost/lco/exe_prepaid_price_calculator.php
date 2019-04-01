@@ -8,10 +8,10 @@ return function ($context){
         require_once(TENANT_RESOURCE_PATH."/bo_lib/master/lco_op.php");
         //var_dump($body);
         $callsp =new stdClass();
-        $callsp->name="SP_PrePaid_Pricing_Initial_NewTariff_ForBoth_test";
+        $callsp->name="SP_PrePaid_Pricing_Initial_NewTariff_ForBoth";
         $callsp->sql="EXEC SP_PrePaid_Pricing_Initial_NewTariff_ForBoth_test @VCno = ?, @PacakageID = ?,
             @GUProPlanID= ?,@PeriodInMonths= ?,@IsAlacarte= ?,
-            @CurrentExpiryDate= ?";
+            @CurrentExpiryDate= ?,@Amount=?";
         //var_dump($body);
         $sqlUnit = $context->resolve("mssql:query");
         $lco =new lco($sqlUnit);
@@ -24,7 +24,8 @@ return function ($context){
             array(&$body->GUProPlanID,SQLSRV_PARAM_IN),
             array(&$body->PeriodInMonths,SQLSRV_PARAM_IN),
             array(&$body->IsAlacarte,SQLSRV_PARAM_IN),
-            array(&$body->CurrentExpiryDate,SQLSRV_PARAM_IN));
+            array(&$body->CurrentExpiryDate,SQLSRV_PARAM_IN),
+            array(&$pram["@Amount"],SQLSRV_PARAM_IN));
         $sqlUnit = $context->resolve("mssql:excute");
         return $sqlUnit->process($callsp)->results;
     }catch(Exception $e){

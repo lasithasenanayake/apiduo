@@ -102,6 +102,7 @@ class Carbite {
 		if (isset(self::$cbf)) return self::call(self::$cbf, self::$cbp);
 		else {
 			$o = self::getAttribute("no404");	
+			
 			if (!isset($o)){
 				http_response_code(404); echo "404 : Not Found :[";
 				self::trigger("notfound");
