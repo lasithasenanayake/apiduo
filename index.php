@@ -4,6 +4,7 @@
     define ("TENANT_PATH", BASE_PATH. "/domains");
     //define ("TENANT_RESOURCE_PATH", TENANT_PATH . "/$_SERVER[HTTP_HOST]"); // removed to hardcode one tenant access only.
     define ("UNIT_PATH", BASE_PATH. "/units");
+    
     //Duo Configurations
     define ("MEDIA_FOLDER", "D:\\media");
     define ("DYNAMIC_CONNECTION", true);
@@ -26,5 +27,7 @@
 
     require_once (BASE_PATH . "/lib/phpcache/cache.php");
     // end duo configurations
-    require_once (BASE_PATH . "/davvag_api_manager.php");
+
+
+require_once (BASE_PATH . "/davvag_api_manager.php");
 DavvagApiManager::start();

@@ -1,0 +1,2 @@
+config:
+  multiTenancy: false
