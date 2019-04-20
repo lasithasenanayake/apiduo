@@ -4,7 +4,7 @@ views:
     route: /version
     method: GET
     urn: file:test.php
-
+# LCO Related Services /lco/ <-- folder.
   getLcoBalance:
     route: /lco/balance/@lcocode
     method: GET
@@ -15,16 +15,11 @@ views:
     method: GET
     urn: file:lco/get_lco_obj_byvcno.php
 
-  getAccount:
-    route: /account/byvc/@vcno
+  getLCOWithAccounts:
+    route: /lco/withaccounts
     method: GET
-    urn: file:account/account.php
-
-  getAccountRenew:
-    route: /account/renewcalculator/@packagetype/@vcno
-    method: GET
-    urn: file:account/renew_v1.php
-
+    urn: file:lco/lcos_with_accounts.php
+    
   getSP:
     route: /lco/basetarifrenew
     method: POST
@@ -54,13 +49,59 @@ views:
     route: /lco/accounts_v1/cache/@gulcoid/@page
     method: GET
     urn: file:lco/rpt_lcoboxes_v1_cacheupdate.php
+#end lco
+# account Related Services. /account/ <-- folder.
+  getAccount:
+    route: /account/byvc/@vcno
+    method: GET
+    urn: file:account/account.php
 
-
+  getAccountRenew:
+    route: /account/renewcalculator/@packagetype/@vcno
+    method: GET
+    urn: file:account/renew_v2.php
+  
+  getAccountRenew_v2:
+    route: /account/renewcalculator_v2/@packagetype/@vcno
+    method: GET
+    urn: file:account/renew_v2.php
+#end account
+#Files Related for reports csv generations
   get_lco_calculation_csv:
     route: /lco/files/calculation/@lcoid
     method: GET
     urn: file:files/lco_renew_recharge.php
 
+  get_lco_7days_expiry_csv:
+    route: /lco/files/7days_expiry/@lcoid
+    method: GET
+    urn: file:files/lco_renew_recharge_exp7.php
+
+  get_lco_expir_csv:
+    route: /lco/files/expired/@lcoid
+    method: GET
+    urn: file:files/lco_renew_recharge_exp.php
+
+  get_lco_files_csv:
+    route: /lco/files/@entity/@type/@lcoid
+    method: GET
+    urn: file:files/lco_csvfilesdownload_v1.php
+
+  get_lco_pending_csv:
+    route: /lco/files/pending/@lcoid
+    method: GET
+    urn: file:files/pending.php
+#end file
+#Vault
+  get_vault_Balance:
+    route: /vault/@type/balance/@vaultid
+    method: GET
+    urn: file:vault/get_balance.php
+
+  get_vault_Block:
+    route: /vault/Block
+    method: POST
+    urn: file:vault/set_block.php
 
 configuration:
   mssql:

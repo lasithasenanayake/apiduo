@@ -14,13 +14,17 @@ Class AccountRecahargeOp{
     $PeriodInMonth,
     $User,
     $GetDate,
-    $CheckAmount ){
+    $CheckAmount,
+    $ChannelCount,
+    $TotalChannelCount ){
         $callsp =new stdClass();
         $callsp->name="SP_PrePaid_Recharge_BasePack_NewTariff_V3";
         $callsp->sql="EXEC SP_PrePaid_Recharge_BasePack_NewTariff_V3 @GUAccountID = ?, @AccountNo = ?,
         @ActivatedDate = ?, @VCNo = ?, @STBNo = ?,
         @MainKey = ?,@ServiceCode = ?, @GUPackageID = ?,@CASType = ?,@GUProPlanID = ?,@PeriodInMonth = ?,
-        @User = ?, @GetDate =?, @CheckAmount = ? ";
+        @User = ?, @GetDate =?, @CheckAmount = ?,
+        @ChannelCount=?,
+        @TotalChannelCount=?";
         //echo $callsp->sql;
                     
         $callsp->parameters=array(array($GUAccountID,SQLSRV_PARAM_IN),
@@ -36,7 +40,9 @@ Class AccountRecahargeOp{
             array($PeriodInMonth,SQLSRV_PARAM_IN),
             array($User,SQLSRV_PARAM_IN),
             array($GetDate,SQLSRV_PARAM_IN),
-            array($CheckAmount,SQLSRV_PARAM_IN));
+            array($CheckAmount,SQLSRV_PARAM_IN),//GUAccountID
+            array($ChannelCount,SQLSRV_PARAM_IN),//GUAccountID
+            array($TotalChannelCount,SQLSRV_PARAM_IN));
             
             //var_dump($callsp->parameters);
                         //$sqlUnit = $context->resolve("mssql:excute");
@@ -61,7 +67,9 @@ Class AccountRecahargeOp{
     $PeriodInMonth ,
     $User ,
     $GetDate,
-    $CheckAmount){
+    $CheckAmount,
+    $ChannelCount,
+    $TotalChannelCount){
         $callsp =new stdClass();
                         $callsp->name="SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3";
                         $callsp->sql="EXEC SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3 
@@ -81,7 +89,9 @@ Class AccountRecahargeOp{
                         @PeriodInMonth =?,
                         @User =?,
                         @GetDate =?,
-                        @CheckAmount =?";
+                        @CheckAmount =?,
+                        @ChannelCount=?,
+                        @TotalChannelCount=?";
                         $callsp->parameters=array(
                         array($GUPackageID,SQLSRV_PARAM_IN),//AccountNo
                         array($GUAccountID,SQLSRV_PARAM_IN),//PeriodInMonths
@@ -98,7 +108,9 @@ Class AccountRecahargeOp{
                         array($PeriodInMonth,SQLSRV_PARAM_IN),//GUAccountID
                         array($User ,SQLSRV_PARAM_IN),//GUAccountID
                         array($GetDate,SQLSRV_PARAM_IN),//GUAccountID
-                        array($CheckAmount,SQLSRV_PARAM_IN));//GetDate
+                        array($CheckAmount,SQLSRV_PARAM_IN),//GUAccountID
+                        array($ChannelCount,SQLSRV_PARAM_IN),//GUAccountID
+                        array($TotalChannelCount,SQLSRV_PARAM_IN));//GetDate
                         //var_dump($callsp->parameters);
                         //$sqlUnit = $context->resolve("mssql:excute");
                         $results=$this->sqlUnit->process($callsp)->results;
@@ -134,6 +146,8 @@ Class AccountRecahargeOp{
         //$MainObj->ServiceStatus=$Accountobject->ServiceStatus;
         $MainObj->TotalB2BAmount=0;
         $MainObj->TotalB2CAmount=0;
+        $alacarte_channel_count=0;
+        $base_channel_count=0;
         //return $Accountobject;
         foreach ($Accountobject->entitlements as $key => $value) {
             //var_dump($value->PackageCategory);
@@ -152,7 +166,7 @@ Class AccountRecahargeOp{
                 case 3:
                     //echo "base";
                     try{
-                        
+                        $base_channel_count+= (int)$value->ChannelCount;
                         $results= $this->rew_basepack($Accountobject->guaccountid,$Accountobject->SMSSID,date_create($Accountobject->DateofActivated->date),
                         $Accountobject->VCNO,$Accountobject->STBNO ,$Accountobject->MainKey,
                         $value->BouquetCode,
@@ -162,20 +176,39 @@ Class AccountRecahargeOp{
                         1,
                         "webuser",
                         date("m-d-Y H:i:s"),
-                        1);
-                       
+                        1,$value->ChannelCount,$value->CumulativeChannelCount);
+                        
                         if(isset($results[0]->AmountB2B)){
                             $AmountColumns->AmountB2B=$results[0]->AmountB2B;
                             $AmountColumns->AmountB2C=$results[0]->AmountB2C;
                         }
                         $AmountColumns->Results=$results;
+                        if(isset($value->ExpDate)){
+                            $Accountobject->ExpiryDate=$value->ExpDate;//->format('m-d-Y H:i:s');//date_create($value->ExpDate->date);
+                        }
+                        else{
+                            $Accountobject->ExpiryDate=date("m-d-Y H:i:s");//->format("m-d-Y H:i:s);
+                        }
                     }catch(Exception $e){
                         $AmountColumns->Results=$e->getMessage();
                     }
                 break;
                 case 4:
                     try{
-                        
+                        //var_dump($value->SubscriptionDate);
+                        //var_dump($value->ExpDate);
+                        $subcriptiondate=date("m-d-Y H:i:s");
+                        $expdate=date("m-d-Y H:i:s");
+                        if(isset($value->SubscriptionDate->date) ){
+                            $subcriptiondate=date_create($value->SubscriptionDate->date);
+                            
+                        }
+
+                        if(isset($value->ExpDate->date) ){
+                            $expdate=date_create($value->ExpDate->date);
+                            
+                        }
+                        $alacarte_channel_count+= (int)$value->ChannelCount;
                         $results=$this->rew_alacarte($value->GUPackageID,
                         $Accountobject->guaccountid,
                         $Accountobject->SMSSID,
@@ -184,15 +217,15 @@ Class AccountRecahargeOp{
                         $Accountobject->MainKey,
                         $value->BouquetCode ,
                         $Accountobject->CASType,
-                        date_create($value->SubscriptionDate->date),
-                        $Accountobject->guproplanid ,
+                        $subcriptiondate,
+                        $Accountobject->guproplanid,
                         0 ,
                         $value->PackageCode  ,
-                        date_create($value->ExpDate->date),
+                        $expdate,
                         1,
                         "user" ,
                         date("m-d-Y H:i:s"),
-                        1);
+                        1,$value->ChannelCount,$value->CumulativeChannelCount);
                         if(isset($results[0]->AmountB2B)){
                             $AmountColumns->AmountB2B=$results[0]->AmountB2B;
                             $AmountColumns->AmountB2C=$results[0]->AmountB2C;
@@ -217,6 +250,8 @@ Class AccountRecahargeOp{
                 $MainObj->TotalB2BAmount+=$AmountColumns->AmountB2B;
                 $MainObj->TotalB2CAmount+=$AmountColumns->AmountB2C;
         }
+        $MainObj->TotalB2BAmount=number_format((float)$MainObj->TotalB2BAmount, 2, '.', '');
+        $MainObj->TotalB2CAmount=number_format((float)$MainObj->TotalB2CAmount, 2, '.', '');
         $MainObj->BillingDetails=$billing;
         return $MainObj;
     }

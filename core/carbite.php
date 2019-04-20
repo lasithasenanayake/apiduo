@@ -208,16 +208,40 @@ class Carbite {
 
 	public static function out($res){
 		$out = $res->Get();		
-
+		//var_dump($out);
 		if (isset($out)){
 			if (is_object($out) || is_array($out)){$ct = "application/json"; $out = json_encode($out, JSON_PRETTY_PRINT);}
 			else {if (strlen($out) > 0) if ($out[0] == '{') $ct = "application/json";}
 		}
-
+		
 		if (!isset($ct)) $ct = "text/plain";
 
 		header("Content-type: ". $ct);
-		echo $out;
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				//strlen($out);
+				echo $out;
+			break;
+			case JSON_ERROR_DEPTH:
+				echo ' - Maximum stack depth exceeded';
+			break;
+			case JSON_ERROR_STATE_MISMATCH:
+				echo ' - Underflow or the modes mismatch';
+			break;
+			case JSON_ERROR_CTRL_CHAR:
+				echo ' - Unexpected control character found';
+			break;
+			case JSON_ERROR_SYNTAX:
+				echo ' - Syntax error, malformed JSON';
+			break;
+			case JSON_ERROR_UTF8:
+				echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+			break;
+			default:
+				echo ' - Unknown error';
+			break;
+		}
+		
 	}
 }
 

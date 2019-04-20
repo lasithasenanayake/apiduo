@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"LCOPOTAL-001",
+    "ApplicationType":"Web Application",
+    "AccessibleViews":["testView","getLcoBalance","get_vault_Block"]
+}

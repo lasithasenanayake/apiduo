@@ -18,6 +18,7 @@ class DavvagApiManager {
     public static $resolver;
     public static $tenantConfiguration;
     public static $eventManager;
+    public static $SercurityVault;
 
     public static function start(){
         DavvagApiManager::$configurationManager = new ConfigurationManager();
@@ -27,19 +28,30 @@ class DavvagApiManager {
         DavvagApiManager::$mainConfig = DavvagApiManager::$configurationManager->getMainConfiguration();
         DavvagApiManager::$tenantConfiguration = DavvagApiManager::$configurationManager->getTenantConfiguration();
         DavvagApiManager::$eventManager = new EventManager();
-        
+        DavvagApiManager::$SercurityVault=DavvagApiManager::GetSecurityVault();
         try{
             DavvagApiManager::$routeManager->loadTenantRoutes();
         }catch(Exception $e){
             $err =new stdClass();
             $err->success=false;
             $err->message=$e->getMessage();
-            //var_dump($e);
-            header("HTTP/1.1 501 ERROR");
             header("content-type: application/json");
             print_r(json_encode($err));
         }
 
+    }
+    
+    public static function GetSecurityVault(){
+        $file=BASE_PATH."/SecurityVault/".APIKEY.".json";
+        if(file_exists($file)){
+            $globaluser =json_decode(file_get_contents($file));
+        }
+        else{
+            die("Unautherized Access.");
+        }
+        //$globaluser->ApplicationKey="Test";
+        $globaluser->UserName="Test";
+        return $globaluser;
     }
 
     public static function addAction($action, $handler){

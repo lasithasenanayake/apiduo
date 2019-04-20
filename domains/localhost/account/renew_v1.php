@@ -13,17 +13,24 @@ return function ($context){
         $Account =new Account($sqlUnit);
         $lco =new lco($sqlUnit);
         $Accountobject=$lco->get_lcos_accounts_vc_v1($request->Params()->vcno);
-        if(strtolower($Accountobject->Status)=="active"){
-            $Accountobject->entitlements=$Account->get_entitlements($Accountobject->guaccountid);
-            $sqlUnit = $context->resolve("mssql:excute");
-            $renew =new AccountRenewOp($sqlUnit);
-            return $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
+        //var_dump("");
+        if(isset($Accountobject)){
+            if(strtolower($Accountobject->Status)=="active"){
+                $Accountobject->entitlements=$Account->get_entitlements($Accountobject->guaccountid);
+                $sqlUnit = $context->resolve("mssql:excute");
+                //var_dump("");
+                $renew =new AccountRenewOp($sqlUnit);
+                return $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
+            }else{
+                //var_dump("");
+                $reconnect=new Reconnect($sqlUnit);
+                $Accountobject->entitlements=$reconnect->get_entitlements($Accountobject->guaccountid);
+                $sqlUnit = $context->resolve("mssql:excute");
+                $renew =new AccountRecahargeOp($sqlUnit);
+                return $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
+            }
         }else{
-            $reconnect=new Reconnect($sqlUnit);
-            $Accountobject->entitlements=$reconnect->get_entitlements($Accountobject->guaccountid);
-            $sqlUnit = $context->resolve("mssql:excute");
-            $renew =new AccountRecahargeOp($sqlUnit);
-            return $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
+            throw new Exception('Account not found for the provided vcno.'); 
         }
        
 }; 

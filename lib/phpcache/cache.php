@@ -4,7 +4,7 @@
 
 class CacheData{
     public static function getObjects($lastVersionId,$className){
-        
+        try{
         $tenantId = ENTITY;
         $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/".$className;
         $lastVersionId= md5($lastVersionId);
@@ -30,10 +30,13 @@ class CacheData{
         }else{
             return null;
         }
+        }catch(Exception $e){
+            return null;
+        }
     }
 
     public static function getObjects_fullcache($lastVersionId,$className){
-        
+        try{
         $tenantId = ENTITY;
         $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/".$className;
         $lastVersionId= md5($lastVersionId);
@@ -55,32 +58,43 @@ class CacheData{
             }else{
             return null;
         }    
+        }catch(Exception $e){
+            return null;
+        }
     }
 
     public static function clearObjects($className){
-        if($className==""){
-            return;
-        }
-        $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/$className";
-        if (file_exists($path)){
-            array_map('unlink', glob("$path/*.*"));
-            rmdir($path);
+        try{
+            if($className==""){
+                return;
+            }
+            $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/$className";
+            if (file_exists($path)){
+                array_map('unlink', glob("$path/*.*"));
+                rmdir($path);
+            }
+        }catch(Exception $e){
+            return null;
         }
     }
     public static function setObjects($lastVersionId,$className, $saveObj){
-        $lastVersionId= md5($lastVersionId);
-        $tenantId = ENTITY;
-        $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/$className";
-            
-        if (!file_exists($path))
-              mkdir($path, 0777, true);
+        try{
+            $lastVersionId= md5($lastVersionId);
+            $tenantId = ENTITY;
+            $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/$className";
+                
+            if (!file_exists($path))
+                mkdir($path, 0777, true);
 
-        //$path=$tenantId
-        $string=json_encode($saveObj);
-        $path=$path."/".$lastVersionId.".chr";
-        $f = fopen($path, 'w');
-        fwrite ($f, $string, strlen($string));
-        fclose($f);
+            //$path=$tenantId
+            $string=json_encode($saveObj);
+            $path=$path."/".$lastVersionId.".chr";
+            $f = fopen($path, 'w');
+            fwrite ($f, $string, strlen($string));
+            fclose($f);
+        }catch(Exception $e){
+            
+        }
         
     }
 }

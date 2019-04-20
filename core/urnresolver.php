@@ -24,6 +24,10 @@ class UrnResolver {
                 require_once(UNIT_PATH . "/mssql/mssql_factory.php");
                 $unit = new MsSqlFactoryHandler();
                 break;
+            case "redis":
+                require_once(UNIT_PATH . "/redis/radis_handler.php");
+                $unit = new redisHandler();
+                break;
         }
 
         if (isset($unit)){

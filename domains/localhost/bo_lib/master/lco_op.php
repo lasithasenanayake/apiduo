@@ -104,32 +104,21 @@ Class lco{
     
 
     public function get_lcos_accounts_v1($rownumber,$page,$gulcoid,$guuserid,$user){
-        require_once("cachequery.php");
-        $cobj =new CacheQuery($this->sqlUnit);
-        $query["key"] = $page."-".$gulcoid."-".$rownumber."-".$guuserid."-".$user;
-        $query["object_name"] = "accounts_lco_v1";
-        $lastid=$rownumber*$page;
-         $query["sql"] = "Select top(".$rownumber.") * 
-        From
-        (SELECT   case when a_CustAccountInformation.SystemNotes is null then 0 else 1 end SystemNotes ,M_PromotionHeader.guproplanid,a_CustAccountInformation.guaccountid,
-        '' enddate,ProPlanCode,0 B_Isvalid,
-        '' CAFReserve,   
-        a_CustAccountInformation.AccountNo as SMSSID ,
-        a_CustAccountInformation.SIMID as VCNO ,
-        a_CustAccountInformation.STBID as STBNO , 
-        a_CustAccountInformation.ServiceStatus as Status ,
-        a_CustAccountInformation.CASType as CASType,
-        '-' as RefNo , 
-        '-' NextRenewal ,
-        m_CODealerMaster.LCOCode,
-         m_CustomerInfo.FirstName SubsName ,
-         ROW_NUMBER() OVER(ORDER BY a_CustAccountInformation.AccountNo) AS RowNumber,
-         a_CustAccountInformation.MainKey,
-         a_CustAccountInformation.DateofActivated
-         FROM         m_CODealerMaster WITH (NOLOCK) inner join m_StoresInformation WITH (NOLOCK) ON   m_CODealerMaster.GULCOID = m_StoresInformation.GULCOID  inner join I_SerialNumber_Header WITH (NOLOCK) on   m_StoresInformation.GUStoreID = I_SerialNumber_Header.GUStoreID inner join a_CustAccountInformation WITH (NOLOCK) ON I_SerialNumber_Header.SerialNumber = a_CustAccountInformation.SIMID   inner join          m_CustomerInfo WITH (NOLOCK) ON a_CustAccountInformation.CustCode = m_CustomerInfo.CustCode and ServiceStatus <> 'Void' inner join M_PromotionHeader (NOLOCK) on a_CustAccountInformation.GUPromotionID=M_PromotionHeader.GUProPlanID and  1='1' and  m_CODealerMaster.GULCOID ='".$gulcoid."') m
-         Where m.RowNumber >".$lastid."";
-        //echo $query["sql"];
-        return $this->account=$cobj->get($query);
+
+        $callsp =new stdClass();
+        $callsp->name="CSV_GetLCOAccounts";
+        $callsp->sql="EXEC CSV_GetLCOAccounts @GULCOID = ?, @Page = ?";
+        //echo $callsp->sql;
+                    
+        $callsp->parameters=array(array($gulcoid,SQLSRV_PARAM_IN),
+            array($page,SQLSRV_PARAM_IN));
+            
+        //var_dump($callsp->parameters);
+                        //$sqlUnit = $context->resolve("mssql:excute");
+        $results=$this->sqlUnit->process($callsp,"excute")->results;
+        //var_dump($results);
+        return $results;
+        
     }
 
     public function get_lcos_accounts_vc_v1($vcno){
@@ -165,41 +154,9 @@ Class lco{
         $cobj =new CacheQuery($this->sqlUnit);
         $query["key"] = $gulcoid."-".$guuserid."-".$user;
         $query["object_name"] = "accounts_lco_count_v1";
-        //$lastid=$rownumber*$page;
-        /*
-        $query["sql"] = "Select count(0) as reccount  
-        From
-        (SELECT   case when a_CustAccountInformation.SystemNotes is null then 0 else 1 end SystemNotes ,M_PromotionHeader.guproplanid,a_CustAccountInformation.guaccountid,
-        '' enddate,ProPlanCode,0 B_Isvalid,
-        '' CAFReserve,   
-        a_CustAccountInformation.AccountNo as SMSSID ,
-        a_CustAccountInformation.SIMID as VCNO ,
-        a_CustAccountInformation.STBID as STBNO , 
-        a_CustAccountInformation.ServiceStatus as Status ,
-        '-' as RefNo , 
-        '-' NextRenewal ,
-        m_CODealerMaster.LCOCode,
-         m_CustomerInfo.FirstName SubsName ,
-         ROW_NUMBER() OVER(ORDER BY a_CustAccountInformation.AccountNo) AS RowNumber  
-         FROM         m_CODealerMaster WITH (NOLOCK) inner join m_StoresInformation WITH (NOLOCK) ON   m_CODealerMaster.GULCOID = m_StoresInformation.GULCOID  inner join I_SerialNumber_Header WITH (NOLOCK) on   m_StoresInformation.GUStoreID = I_SerialNumber_Header.GUStoreID inner join a_CustAccountInformation WITH (NOLOCK) ON I_SerialNumber_Header.SerialNumber = a_CustAccountInformation.SIMID   inner join          m_CustomerInfo WITH (NOLOCK) ON a_CustAccountInformation.CustCode = m_CustomerInfo.CustCode and ServiceStatus <> 'Void' inner join M_PromotionHeader (NOLOCK) on a_CustAccountInformation.GUPromotionID=M_PromotionHeader.GUProPlanID and  1='1' and  m_CODealerMaster.GULCOID in  (  select GUDealerID from M_DealerUserMapping 
-         where ( GUDealerID ='".$gulcoid."' or guuserid='".$guuserid."') and UserName='".$user."')) m";*/
-         $query["sql"] = "Select count(0) as reccount  
-        From
-        (SELECT   case when a_CustAccountInformation.SystemNotes is null then 0 else 1 end SystemNotes ,M_PromotionHeader.guproplanid,a_CustAccountInformation.guaccountid,
-        '' enddate,ProPlanCode,0 B_Isvalid,
-        '' CAFReserve,   
-        a_CustAccountInformation.AccountNo as SMSSID ,
-        a_CustAccountInformation.SIMID as VCNO ,
-        a_CustAccountInformation.STBID as STBNO , 
-        a_CustAccountInformation.ServiceStatus as Status ,
-        '-' as RefNo , 
-        '-' NextRenewal ,
-        m_CODealerMaster.LCOCode,
-         m_CustomerInfo.FirstName SubsName ,
-         ROW_NUMBER() OVER(ORDER BY a_CustAccountInformation.AccountNo) AS RowNumber  
-         FROM         m_CODealerMaster WITH (NOLOCK) inner join m_StoresInformation WITH (NOLOCK) ON   m_CODealerMaster.GULCOID = m_StoresInformation.GULCOID  inner join I_SerialNumber_Header WITH (NOLOCK) on   m_StoresInformation.GUStoreID = I_SerialNumber_Header.GUStoreID inner join a_CustAccountInformation WITH (NOLOCK) ON I_SerialNumber_Header.SerialNumber = a_CustAccountInformation.SIMID   inner join          m_CustomerInfo WITH (NOLOCK) ON a_CustAccountInformation.CustCode = m_CustomerInfo.CustCode and ServiceStatus <> 'Void' inner join M_PromotionHeader (NOLOCK) on a_CustAccountInformation.GUPromotionID=M_PromotionHeader.GUProPlanID and  1='1' and  m_CODealerMaster.GULCOID ='".$gulcoid."') m";
-        //echo $query["sql"];
-        $rec =$cobj->get($query);
+        
+        $query["sql"] = "Select Count(0) as reccount From csv_LCOAccounts Where GULCOID='".$gulcoid."'";
+        $rec=$cobj->get($query);
         if(count($rec)>0){
             return $rec[0]->reccount;
         }else{
@@ -212,13 +169,8 @@ Class lco{
         $cobj =new CacheQuery($this->sqlUnit);
         $query["key"] = $lcocode."20x";
         $query["object_name"] = "accounts_lco_count";
-        $query["sql"] = "SELECT        count(m_CODealerMaster.LCOCode)  as reccount 
-        FROM            I_SerialNumber_Header INNER JOIN
-                                 m_StoresInformation ON I_SerialNumber_Header.GUStoreID = m_StoresInformation.GUStoreID INNER JOIN
-                                 a_CustAccountInformation ON I_SerialNumber_Header.SerialNumber = a_CustAccountInformation.SIMID INNER JOIN
-                                 m_CODealerMaster ON m_StoresInformation.GULCOID = m_CODealerMaster.GULCOID
-        WHERE        (m_CODealerMaster.LCOCode = N'".$lcocode."') and ServiceStatus in('Active','InActive')";
-        $rec=$this->account=$cobj->get($query);
+        $query["sql"] = "Select Count(0) as reccount From csv_LCOAccounts Where GULCOID='".$lcocode."'";
+        $rec=$cobj->get($query);
         if(count($rec)>0){
             return $rec[0]->reccount;
         }else{

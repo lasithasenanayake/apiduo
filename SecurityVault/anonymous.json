@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"anonymusaccess",
+    "ApplicationType":"Web Application",
+    "AccessibleViews":["get_lco_files_csv","getLcoBalance","get_vault_Block"]
+}

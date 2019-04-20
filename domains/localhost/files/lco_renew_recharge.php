@@ -22,15 +22,26 @@ return function ($context){
             header("Content-Disposition: attachment; filename=".$lcocode.".csv");
             header("Pragma: no-cache"); 
             header("Expires: 0");
-            echo file_get_contents($filepath);
-            exit();
+            
+            $timedif = (time() - filemtime($filepath));
+            if ($timedif > 3600*96) {
+                require_once(TENANT_RESOURCE_PATH."/bo_lib/master/file_csv_q.php");
+                $l=new LCO_Pending();
+                echo $l->addLCO($request->Params()->lcoid);
+                exit();
+            }else{
+                echo file_get_contents($filepath);
+                exit();
+            }
         }else{
             header("Content-type: text/csv");
             header("Content-Disposition: attachment; filename=".$lcocode.".csv");
             header("Pragma: no-cache");
             header("Expires: 0");
-            echo "Requested csv has been not generated please contact system Admin.\n";
-            echo "Entity -".ENTITY;
+            //echo "Requested csv has been put to processing que it will be generated shortly.\n";
+            require_once(TENANT_RESOURCE_PATH."/bo_lib/master/file_csv_q.php");
+            $l=new LCO_Pending();
+            echo $l->addLCO($request->Params()->lcoid);
             
             exit();
         }

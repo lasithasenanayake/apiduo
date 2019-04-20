@@ -13,13 +13,14 @@ Class AccountRenewOp{
     $exiperydate,
     $castype,
     $guaccountid,
-    $getdate){
+    $getdate,
+    $ChannelCount,$TotalChannelCount,$NCFFree){
         $callsp =new stdClass();
         $callsp->name="SP_PrePaid_Renew_BasePack_NewTariff_V3";
         $callsp->sql="EXEC SP_PrePaid_Renew_BasePack_NewTariff_V3 @AccountNo = ?, @PeriodInMonths = ?,
         @CreateUser= ?,@TransID= ?,@VCno= ?,
         @CheckAmount= ?,@QuickRenew= ?,@GUProPlanID= ?,@GUPackageID= ?,@CurrntExpiryDate= ?,@CasType= ?,
-        @GUAccountID= ?,@GetDate=?";
+        @GUAccountID= ?,@GetDate=?,@ChannelCount=?,@TotalChannelCount=?";
                     
         $callsp->parameters=array(array($accountno,SQLSRV_PARAM_IN),
             array($period,SQLSRV_PARAM_IN),
@@ -33,7 +34,9 @@ Class AccountRenewOp{
             array($exiperydate,SQLSRV_PARAM_IN),
             array($castype,SQLSRV_PARAM_IN),
             array($guaccountid,SQLSRV_PARAM_IN),
-            array($getdate,SQLSRV_PARAM_IN));
+            array($getdate,SQLSRV_PARAM_IN),
+            array($ChannelCount,SQLSRV_PARAM_IN),
+            array($TotalChannelCount,SQLSRV_PARAM_IN));
                         //$sqlUnit = $context->resolve("mssql:excute");
             $results=$this->sqlUnit->process($callsp)->results;
                         
@@ -50,7 +53,9 @@ Class AccountRenewOp{
     $packagid,
     $subdate,
     $guaccountid,
-    $getdate){
+    $getdate,
+    $ChannelCount,
+    $TotalChannelCount,$NCFFree){
         /*@AccountNo nvarchar(50), @PeriodInMonths int, @CreateUser nvarchar(50), 
         @TransID int, @VCno nvarchar(50), @CheckAmount bit, @CurrntExpiryDate datetime, @GUPackageID nvarchar(100), 
         @SubscriptionDate datetime, @GUAccountID nvarchar(50), @GetDate Datetime*/
@@ -67,7 +72,9 @@ Class AccountRenewOp{
                         @GUPackageID= ?,
                         @SubscriptionDate= ?,
                         @GUAccountID= ?,
-                        @GetDate=?";
+                        @GetDate=?,
+                        @ChannelCount=?,
+                        @TotalChannelCount=?";
                         $callsp->parameters=array(
                         array($accountno,SQLSRV_PARAM_IN),//AccountNo
                         array($period,SQLSRV_PARAM_IN),//PeriodInMonths
@@ -79,7 +86,9 @@ Class AccountRenewOp{
                         array($packagid,SQLSRV_PARAM_IN),//GUPackageID
                         array($subdate,SQLSRV_PARAM_IN),//SubscriptionDate
                         array($guaccountid,SQLSRV_PARAM_IN),//GUAccountID
-                        array($getdate,SQLSRV_PARAM_IN));//GetDate
+                        array($getdate,SQLSRV_PARAM_IN),//GUAccountID
+                        array($ChannelCount,SQLSRV_PARAM_IN),//GUAccountID
+                        array($TotalChannelCount,SQLSRV_PARAM_IN));//GetDate
                         //var_dump($callsp->parameters);
                         //$sqlUnit = $context->resolve("mssql:excute");
                         
@@ -115,6 +124,7 @@ Class AccountRenewOp{
         //$MainObj->ServiceStatus=$Accountobject->ServiceStatus;
         $MainObj->TotalB2BAmount=0;
         $MainObj->TotalB2CAmount=0;
+        $NCC=0;
         //return $Accountobject;
         foreach ($Accountobject->entitlements as $key => $value) {
             //var_dump($value->PackageCategory);
@@ -133,7 +143,7 @@ Class AccountRenewOp{
                 case 3:
                     //echo "base";
                     try{
-                        
+                        $value->NCC=$NCC;
                         $results= $this->rew_basepack($Accountobject->SMSSID,1,"webuser",
                                                     0,$Accountobject->VCNO,
                                                     1,$quick,
@@ -141,10 +151,13 @@ Class AccountRenewOp{
                                                     $value->GUPackageID,
                                                     date_create($value->ExpDate->date),
                                                     $Accountobject->CASType,
-                                                    $Accountobject->guaccountid,date("m-d-Y H:i:s"));
+                                                    $Accountobject->guaccountid,date("m-d-Y H:i:s"),$value->ChannelCount,$value->CumulativeChannelCount,$NCC);
                         if(isset($results[0]->AmountB2B)){
                             $AmountColumns->AmountB2B=$results[0]->AmountB2B;
                             $AmountColumns->AmountB2C=$results[0]->AmountB2C;
+                        }
+                        if(isset($value->ExpDate)){
+                            $Accountobject->ExpiryDate=date_create($value->ExpDate->date);
                         }
                         $AmountColumns->Results=$results;
                     }catch(Exception $e){
@@ -153,14 +166,37 @@ Class AccountRenewOp{
                 break;
                 case 4:
                     try{
-                        
-                        $results=$this->rew_alacarte($Accountobject->SMSSID,1,"webuser",0,$Accountobject->VCNO,1,date_create($value->ExpDate->date),
-                        $value->GUPackageID,date_create($value->SubscriptionDate->date),$Accountobject->guaccountid,date("m-d-Y H:i:s"));
+                        $value->NCC=$NCC;
+                        $subcriptiondate=date("m-d-Y H:i:s");
+                        $expdate=date("m-d-Y H:i:s");
+                        if(isset($value->SubscriptionDate->date) ){
+                            $subcriptiondate=date_create($value->SubscriptionDate->date);
+                            
+                        }
+
+                        if(isset($value->ExpDate->date) ){
+                            $expdate=date_create($value->ExpDate->date);
+                            
+                        }
+                        $results=$this->rew_alacarte($Accountobject->SMSSID,1,"webuser",0,$Accountobject->VCNO,1,$expdate,
+                        $value->GUPackageID,$subcriptiondate,$Accountobject->guaccountid,date("m-d-Y H:i:s")
+                        ,$value->ChannelCount,$value->CumulativeChannelCount,$NCC);
+                        //var_dump($value->IsAddon);  
                         if(isset($results[0]->AmountB2B)){
                             $AmountColumns->AmountB2B=$results[0]->AmountB2B;
                             $AmountColumns->AmountB2C=$results[0]->AmountB2C;
                         }
-                        $AmountColumns->Results=$results;
+                        $AmountColumns->Results=$results; 
+                        $diccount=floatval($value->NCFDiscount);
+                        if(isset($value->IsAddon) || $value->IsAddon==1){
+                            if(strpos(strtolower($value->PackageCode),"bst")===false){
+                                if($diccount==100){
+                                    $NCC=1;
+                                }
+                            }else{
+                                //echo $value->PackageCode;
+                            }
+                        }
                     }catch(Exception $e){
                         $AmountColumns->Results=$e->getMessage();
                     }
@@ -179,6 +215,8 @@ Class AccountRenewOp{
                 $MainObj->TotalB2BAmount+=$AmountColumns->AmountB2B;
                 $MainObj->TotalB2CAmount+=$AmountColumns->AmountB2C;
         }
+        $MainObj->TotalB2BAmount=number_format((float)$MainObj->TotalB2BAmount, 2, '.', '');
+        $MainObj->TotalB2CAmount=number_format((float)$MainObj->TotalB2CAmount, 2, '.', '');
         $MainObj->BillingDetails=$billing;
         return $MainObj;
     }
