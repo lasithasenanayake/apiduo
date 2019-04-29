@@ -19,6 +19,7 @@ class DavvagApiManager {
     public static $tenantConfiguration;
     public static $eventManager;
     public static $SercurityVault;
+    public static $logObject;
 
     public static function start(){
         DavvagApiManager::$configurationManager = new ConfigurationManager();
@@ -69,4 +70,32 @@ class DavvagApiManager {
     public static function triggerFilter($filter, $data = null){
         DavvagApiManager::$eventManager->triggerFilter($filter, $data);
     }
+
+    public static function log($app,$logtype,$logstring){
+        if(!isset(DavvagApiManager::$logObject)){
+            DavvagApiManager::$logObject=new stdClass();
+            DavvagApiManager::$logObject->starttime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->lastexetime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
+            DavvagApiManager::$logObject->path=REQUEST_PATH;
+            //DavvagApiManager::$logObject->
+        }
+        if(!isset(DavvagApiManager::$logObject->{$app})){
+            DavvagApiManager::$logObject->{$app}=new stdClass();
+            DavvagApiManager::$logObject->{$app}->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
+            DavvagApiManager::$logObject->{$app}->path=REQUEST_PATH;
+            DavvagApiManager::$logObject->{$app}->starttime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->{$app}->lastexetime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->{$app}->log=array();
+        }
+        DavvagApiManager::$logObject->{$app}->lastexetime= date("m-d-Y H:i:s");
+        DavvagApiManager::$logObject->lastexetime= date("m-d-Y H:i:s");
+        $logitem =new stdClass();
+        $logitem->time= date("m-d-Y H:i:s");
+        $logitem->type=$logtype;
+        $logitem->message=$logstring;
+        array_push(DavvagApiManager::$logObject->{$app}->log,$logitem);
+    }
+
+    
 }

@@ -7,6 +7,14 @@ class MsSqlHandler extends AbstractUnit {
     private static $connPool;
     private $dbcon;
     
+    private function init(){
+        if(!$this->dbcon){
+            if (!isset(MsSqlHandler::$connPool))
+                MsSqlHandler::$connPool = new MsSqlConnectionPool();
+                
+            $this->dbcon = MsSqlHandler::$connPool->getConnection();
+        }
+    }
     public function process ($input,$operation=null){
         if (!isset(MsSqlHandler::$connPool))
             MsSqlHandler::$connPool = new MsSqlConnectionPool();
@@ -20,7 +28,7 @@ class MsSqlHandler extends AbstractUnit {
             case "query":
                 return $this->query($input);
             case "insert":
-                return $this->insert();
+                return $this->insert($input->tablename,$input->data);
             case "update":
                 return $this->update();
             case "delete":
@@ -33,8 +41,36 @@ class MsSqlHandler extends AbstractUnit {
 
     }
 
-    public function insert(){
+    public function insert($tablename,$data){
+        $this->init();
+        if( $this->dbcon ){
+            var_dump($data);
+            foreach ($data as $key => $obj) {
+                $sql=$this->GetInsertStatment($tablename,$obj);
 
+                $stmt = sqlsrv_prepare($this->dbcon, $sql, array());
+                //return $stmt;
+                if( !$stmt ) {
+                    throw new Exception(sqlsrv_errors()[0]["message"]);
+                }
+                $result =sqlsrv_execute($stmt);
+                //var_dump($sql);
+                if($result!==false ){
+                    $obj->result=$result;
+
+                    //return $result;
+                }else{
+                    //var_dump(sqlsrv_errors());
+                    $obj->result=sqlsrv_errors()[0]["message"];
+                    //throw new Exception(sqlsrv_errors()[0]["message"]);
+                }
+            }
+            return $data;
+            //var_dump($result);
+        
+        }else{
+            throw new Exception("Connection Closed");
+        }
     }
 
     public function update(){
@@ -45,6 +81,50 @@ class MsSqlHandler extends AbstractUnit {
 
     }
 
+    private function GetInsertStatment($table,$data){
+        $first=true;
+        $insertPart1="Insert Into ".$table." (";
+        $Insertstr="";
+        //foreach ($data as $key => $obj) {
+            $values="Values(";
+                foreach (get_object_vars($data) as $Objkey => $Objvalue) {
+                    //if($first){
+                        $insertPart1.=$Objkey.",";
+                    //}
+                    switch(gettype($Objvalue)){
+                        case "string":
+                            $values.="'".str_replace("'","''",$Objvalue)."',";
+                        break;
+                        case "integer":
+                            $values.="".$Objvalue.",";
+                        break;
+                        case "double":
+                            $values.="".$Objvalue.",";
+                        break;
+                        case "array":
+                            //var_dump($Objvalue);
+                            if(isset($Objvalue[0])){
+                                $values.="'".date('m/d/y H:i:s',$Objvalue[0])."',";
+                            }
+                            //if(isset($Objvalue[0])){
+                                //$values.="'".date('m/d/y H:i:s',$Objvalue[0])."',";
+                            //}
+                        break;
+                        default:
+                            $values.="'".$Objvalue."',";
+                        break;
+                    }
+                }
+                //if($first){
+                    $insertPart1=rtrim($insertPart1,",").") ";
+                    $first=false;
+                    
+                //}
+                $values=rtrim($values,",").")";
+                $Insertstr.=$insertPart1.$values;
+                //echo $Insertstr;
+        return $Insertstr;
+    }
     public function BulkSend($input){
         if(count($input->Values)==0){
             return null;
@@ -162,6 +242,9 @@ class MsSqlHandler extends AbstractUnit {
                 //var_dump(sqlsrv_errors());
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
+        }else{
+            throw new Exception("Connection Closed");
+
         }
     }
 
@@ -184,7 +267,8 @@ class MsSqlHandler extends AbstractUnit {
             
             $stmt = sqlsrv_query( $this->dbcon, $input);
             if( $stmt === false ) {
-                die( print_r( sqlsrv_errors(), true));
+                throw new Exception(sqlsrv_errors()[0]["message"]);
+                //die( print_r( sqlsrv_errors(), true));
             }
             while( $obj = sqlsrv_fetch_object( $stmt)) {
                 //echo $obj->fName.", ".$obj->lName."<br />";

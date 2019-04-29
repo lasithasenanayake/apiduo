@@ -17,6 +17,9 @@ Class AccountRecahargeOp{
     $CheckAmount,
     $ChannelCount,
     $TotalChannelCount,$NCFVal){
+        $ChannelCount=0;
+        $TotalChannelCount=0;
+        $NCFVal=0;
         $callsp =new stdClass();
         $callsp->name="SP_PrePaid_Recharge_BasePack_NewTariff_V3";
         $callsp->sql="EXEC SP_PrePaid_Recharge_BasePack_NewTariff_V3 @GUAccountID = ?, @AccountNo = ?,
@@ -73,6 +76,9 @@ Class AccountRecahargeOp{
     $TotalChannelCount,
     $NCFVal,
     $Dateofactivation){
+        $ChannelCount=0;
+        $TotalChannelCount=0;
+        $NCFVal=0;
         $callsp =new stdClass();
                         $callsp->name="SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3";
                         $callsp->sql="EXEC SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3 

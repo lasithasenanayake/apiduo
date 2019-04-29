@@ -102,6 +102,11 @@ views:
     route: /vault/Block
     method: POST
     urn: file:vault/set_block.php
+  
+  post_vault_transactions:
+    route: /vault/lco/save
+    method: POST
+    urn: file:/vault/add_transactions.php
 
 configuration:
   mssql:

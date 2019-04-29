@@ -7,6 +7,7 @@
     define ("DYNAMIC_CONNECTION", true);
     define ("SQL_CONNECTION_PATH",BASE_PATH . "/connections");
     define ("TENANT_RESOURCE_PATH", TENANT_PATH . "/localhost");
+    define ("REQUEST_PATH", $_SERVER['REQUEST_URI']);
     $headers=getallheaders();
     if(isset($headers["entity"])){
         define ("ENTITY", $headers["entity"]);

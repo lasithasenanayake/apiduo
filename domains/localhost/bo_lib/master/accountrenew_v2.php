@@ -15,6 +15,9 @@ Class AccountRenewOp{
     $guaccountid,
     $getdate,
     $ChannelCount,$TotalChannelCount,$NCFFree,$NCFVal){
+        $ChannelCount=0;
+        $TotalChannelCount=0;
+        $NCFVal=0;
         $callsp =new stdClass();
         $callsp->name="SP_PrePaid_Renew_BasePack_NewTariff_V3";
         $callsp->sql="EXEC SP_PrePaid_Renew_BasePack_NewTariff_V3 @AccountNo = ?, @PeriodInMonths = ?,
@@ -57,9 +60,13 @@ Class AccountRenewOp{
     $getdate,
     $ChannelCount,
     $TotalChannelCount,$NCFFree,$NCFVal){
+        //echo $NCFVal;
         /*@AccountNo nvarchar(50), @PeriodInMonths int, @CreateUser nvarchar(50), 
         @TransID int, @VCno nvarchar(50), @CheckAmount bit, @CurrntExpiryDate datetime, @GUPackageID nvarchar(100), 
         @SubscriptionDate datetime, @GUAccountID nvarchar(50), @GetDate Datetime*/
+        $ChannelCount=0;
+        $TotalChannelCount=0;
+        $NCFVal=0;
         $callsp =new stdClass();
                         $callsp->name="SP_PrePaid_Renew_Alacarte_NewTariff_V3";
                         $callsp->sql="EXEC SP_PrePaid_Renew_Alacarte_NewTariff_V3 
@@ -92,6 +99,7 @@ Class AccountRenewOp{
                         array($TotalChannelCount,SQLSRV_PARAM_IN),//GUAccountID
                         array($NCFVal,SQLSRV_PARAM_IN));//GetDate
                         //var_dump($callsp->parameters);
+                        //var_dump($callsp->sql);
                         //$sqlUnit = $context->resolve("mssql:excute");
                         
                         return $this->sqlUnit->process($callsp)->results;
@@ -131,6 +139,7 @@ Class AccountRenewOp{
         //return $Accountobject;
         foreach ($Accountobject->entitlements as $key => $value) {
             //var_dump($value->PackageCategory);
+            
             if($packageid!=$value->PackageCategory){
                 //echo "im in".$value->PackageCategory." - ".$packageid  ;
                 if($packageid!=-1){
