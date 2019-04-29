@@ -30,6 +30,8 @@ class DavvagApiManager {
         DavvagApiManager::$tenantConfiguration = DavvagApiManager::$configurationManager->getTenantConfiguration();
         DavvagApiManager::$eventManager = new EventManager();
         DavvagApiManager::$SercurityVault=DavvagApiManager::GetSecurityVault();
+        DavvagApiManager::subscribeToEvents();
+
         try{
             DavvagApiManager::$routeManager->loadTenantRoutes();
         }catch(Exception $e){
@@ -40,6 +42,16 @@ class DavvagApiManager {
             print_r(json_encode($err));
         }
 
+    }
+
+
+    private static function subscribeToEvents(){
+        DavvagApiManager::addAction("end", "DavvagApiManager::subscribeToLogger");
+    }
+
+    public static function subscribeToLogger(){
+        require_once (BASE_PATH. "/lib/logger/davvag_logger.php");
+        DavvagLogger::Save(DavvagApiManager::$logObject);
     }
     
     public static function GetSecurityVault(){
@@ -78,23 +90,24 @@ class DavvagApiManager {
             DavvagApiManager::$logObject->lastexetime= date("m-d-Y H:i:s");
             DavvagApiManager::$logObject->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
             DavvagApiManager::$logObject->path=REQUEST_PATH;
+            DavvagApiManager::$logObject->apps = new stdClass();
             //DavvagApiManager::$logObject->
         }
         if(!isset(DavvagApiManager::$logObject->{$app})){
-            DavvagApiManager::$logObject->{$app}=new stdClass();
-            DavvagApiManager::$logObject->{$app}->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
-            DavvagApiManager::$logObject->{$app}->path=REQUEST_PATH;
-            DavvagApiManager::$logObject->{$app}->starttime= date("m-d-Y H:i:s");
-            DavvagApiManager::$logObject->{$app}->lastexetime= date("m-d-Y H:i:s");
-            DavvagApiManager::$logObject->{$app}->log=array();
+            DavvagApiManager::$logObject->apps->{$app}=new stdClass();
+            DavvagApiManager::$logObject->apps->{$app}->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
+            DavvagApiManager::$logObject->apps->{$app}->path=REQUEST_PATH;
+            DavvagApiManager::$logObject->apps->{$app}->starttime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->apps->{$app}->lastexetime= date("m-d-Y H:i:s");
+            DavvagApiManager::$logObject->apps->{$app}->log=array();
         }
-        DavvagApiManager::$logObject->{$app}->lastexetime= date("m-d-Y H:i:s");
+        DavvagApiManager::$logObject->apps->{$app}->lastexetime= date("m-d-Y H:i:s");
         DavvagApiManager::$logObject->lastexetime= date("m-d-Y H:i:s");
         $logitem =new stdClass();
         $logitem->time= date("m-d-Y H:i:s");
         $logitem->type=$logtype;
         $logitem->message=$logstring;
-        array_push(DavvagApiManager::$logObject->{$app}->log,$logitem);
+        array_push(DavvagApiManager::$logObject->apps->{$app}->log,$logitem);
     }
 
     

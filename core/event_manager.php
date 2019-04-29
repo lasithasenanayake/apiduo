@@ -30,7 +30,11 @@ class EventManager {
         if (isset($this->$array[$action])){
 			foreach ($this->$array[$action] as $handler) {
 				try{
-					$handler($data);
+                    if (is_string($handler)){
+                        call_user_func($handler, $data);
+                    }else{
+                        $handler($data);
+                    }
 				}catch (Exception $e){
 
 				}
