@@ -156,12 +156,16 @@ Class AccountRenewOp{
                     //echo "base";
                     try{
                         $value->NCC=$NCC;
+                        $base_expdate=date("m-d-Y H:i:s");
+                        if(isset($value->ExpDate->date)){
+                            $base_expdate=date_create($value->ExpDate->date);
+                        }
                         $results= $this->rew_basepack($Accountobject->SMSSID,1,"webuser",
                                                     0,$Accountobject->VCNO,
                                                     1,$quick,
                                                     $Accountobject->guproplanid,
                                                     $value->GUPackageID,
-                                                    date_create($value->ExpDate->date),
+                                                    $base_expdate,
                                                     $Accountobject->CASType,
                                                     $Accountobject->guaccountid,date("m-d-Y H:i:s"),$value->ChannelCount,$value->CumulativeChannelCount,$NCC,
                                                     $NFCCount);

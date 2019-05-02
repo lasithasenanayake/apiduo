@@ -6,9 +6,13 @@ use Elasticsearch\ClientBuilder;
 
 class DavvagLogger {
     public static function Save($logObject){
+        if(!LOGGER){
+            return;
+        }
+        try{
         if ($logObject==null)
             return;
-
+        //echo "In Elastic Search";
         $client = ClientBuilder::create()->build();
         $paramObj = clone $logObject;
         unset($paramObj->apps);
@@ -24,6 +28,9 @@ class DavvagLogger {
 
             $response = $client->index($params);
         }
+    }catch(Exception $e){
+        //echo $e->getMessage();
+    }
        
     }
 }

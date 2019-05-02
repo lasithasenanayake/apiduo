@@ -44,9 +44,13 @@ class MsSqlHandler extends AbstractUnit {
     public function insert($tablename,$data){
         $this->init();
         if( $this->dbcon ){
-            var_dump($data);
+            //var_dump($data);
+            DavvagApiManager::log("mysql-insert","info","start Insert ". $tablename." Number of Objects ".count($data));
             foreach ($data as $key => $obj) {
+                
+
                 $sql=$this->GetInsertStatment($tablename,$obj);
+                DavvagApiManager::log("mysql-insert","info","table[". $tablename."]:sql[".$sql."]");
 
                 $stmt = sqlsrv_prepare($this->dbcon, $sql, array());
                 //return $stmt;
@@ -61,14 +65,18 @@ class MsSqlHandler extends AbstractUnit {
                     //return $result;
                 }else{
                     //var_dump(sqlsrv_errors());
+                    DavvagApiManager::log("mysql-insert","error","table[". $tablename."]:error[".sqlsrv_errors()[0]["message"]."]");
+
                     $obj->result=sqlsrv_errors()[0]["message"];
                     //throw new Exception(sqlsrv_errors()[0]["message"]);
                 }
             }
+            DavvagApiManager::log("mysql-insert","info","end Insert ".$tablename);
             return $data;
             //var_dump($result);
         
         }else{
+            DavvagApiManager::log("mysql-insert","error","end Insert ".$tablename);
             throw new Exception("Connection Closed");
         }
     }
@@ -131,6 +139,8 @@ class MsSqlHandler extends AbstractUnit {
         }
         //echo $this->GetBulKStatment($input);
         if( $this->dbcon ){
+            DavvagApiManager::log("mysql-bulksend","info","start Insert ". $input->Table." Number of Objects ".count($input->Values));
+
             $stmt = sqlsrv_prepare($this->dbcon,$this->GetBulKStatment($input), array());
 
             if( !$stmt ) {
@@ -142,10 +152,12 @@ class MsSqlHandler extends AbstractUnit {
             if( $result){
                 // Output params are now set,
                 $input->results=$result;
+                DavvagApiManager::log("mysql-bulksend","info","end Insert ".$input->Table." Number of Objects ".count($input->Values));
+
                 return $input; 
             }else{
                 //var_dump(sqlsrv_errors());
-                
+                DavvagApiManager::log("mysql-bulksend","error","table[".$input->Table."]:error[".sqlsrv_errors()[0]["message"]."]");                
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
         }
@@ -217,9 +229,12 @@ class MsSqlHandler extends AbstractUnit {
     public function excute($input){
         //$sql = "EXEC stp_Create_Item @Item_ID = ?, @Item_Name = ?";
         if( $this->dbcon ){
+            DavvagApiManager::log("mysql-excute","info","start exccute sp  [". $input->name."] ");            
             $stmt = sqlsrv_prepare($this->dbcon, $input->sql, $input->parameters);
 
             if( !$stmt ) {
+                DavvagApiManager::log("mysql-excute","error","stetment[Issue in stetment]:spname[".$input->name."]:error[".sqlsrv_errors()[0]["message"]."]");                
+
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
             $result =sqlsrv_execute($stmt);
@@ -237,9 +252,14 @@ class MsSqlHandler extends AbstractUnit {
                 
                 // Output params are now set,
                 $input->results=$objectlist;
+                DavvagApiManager::log("mysql-excute","info","end exccute sp  [". $input->name."] ");            
+
                 return $input; 
             }else{
                 //var_dump(sqlsrv_errors());
+                //DavvagApiManager::log("mysql-excute","error","end exccute sp  [". $input->name."] ");            
+                DavvagApiManager::log("mysql-excute","error","spname[".$input->name."]:error[".sqlsrv_errors()[0]["message"]."]");                
+
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
         }else{
@@ -264,6 +284,7 @@ class MsSqlHandler extends AbstractUnit {
             $objectlist = array();
             //echo $input;
             //var_dump($input)
+            DavvagApiManager::log("mysql-query","info","start query for  [". $input."] ");            
             
             $stmt = sqlsrv_query( $this->dbcon, $input);
             if( $stmt === false ) {
@@ -275,10 +296,13 @@ class MsSqlHandler extends AbstractUnit {
                 array_push($objectlist,$obj);
             }
             //$this->close();
+            DavvagApiManager::log("mysql-query","info","end query sending [". count($objectlist)."] objects ");            
+
             return $objectlist;
 
         }else{
             //echo $input;
+            DavvagApiManager::log("mysql-query","error","query[".$input."]:error[".sqlsrv_errors()[0]["message"]."]");                
             throw new Exception(sqlsrv_errors()[0]["message"]);
         }
     }

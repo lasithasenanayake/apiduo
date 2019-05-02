@@ -8,6 +8,9 @@
     define ("SQL_CONNECTION_PATH",BASE_PATH . "/connections");
     define ("TENANT_RESOURCE_PATH", TENANT_PATH . "/localhost");
     define ("REQUEST_PATH", $_SERVER['REQUEST_URI']);
+    define ("LOGGER", false);
+    date_default_timezone_set('Asia/Kolkata');
+
     $headers=getallheaders();
     if(isset($headers["entity"])){
         define ("ENTITY", $headers["entity"]);
@@ -23,7 +26,23 @@
     }else{
         define ("APIKEY", "anonymous");
     }
-    
+
+    if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      define ("IP", $_SERVER['HTTP_CLIENT_IP']);
+      //$ip=;
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      define ("IP", $_SERVER['HTTP_X_FORWARDED_FOR']);
+      
+    }
+    else
+    {
+      //$ip=$_SERVER['REMOTE_ADDR'];
+      define ("IP", $_SERVER['REMOTE_ADDR']);
+    }
+
     
     require_once (BASE_PATH . "/lib/phpcache/cache.php");
     // end duo configurations
