@@ -91,10 +91,17 @@ class DavvagApiManager {
 
     public static function log($app,$logtype,$logstring){
         //echo $logstring;
+        $t = microtime(true);
+        $micro = sprintf("%06d",($t - floor($t)) * 1000000);
+        //echo floor($micro/1000);
+        $d = new DateTime( date('Y-m-d H:i:s.'.$micro, $t) );
+        
+        $time= $d->format("Y-m-d").'T'.$d->format("H:i:s").".".floor($micro/1000);
+        //echo $time;
         if(!isset(DavvagApiManager::$logObject)){
             DavvagApiManager::$logObject=new stdClass();
-            DavvagApiManager::$logObject->starttime= date("Y-m-d").'T'.date("H:i:s");
-            DavvagApiManager::$logObject->lastexetime= date("Y-m-d").'T'.date("H:i:s");
+            DavvagApiManager::$logObject->starttime= $time;//date("Y-m-d").'T'.date("H:i:s");
+            DavvagApiManager::$logObject->lastexetime= $time;//date("Y-m-d").'T'.date("H:i:s");
             DavvagApiManager::$logObject->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
             DavvagApiManager::$logObject->path=REQUEST_PATH;
             DavvagApiManager::$logObject->entity=ENTITY;
@@ -107,8 +114,8 @@ class DavvagApiManager {
             DavvagApiManager::$logObject->apps->{$app}->apikey=DavvagApiManager::$SercurityVault->ApplicationKey;
             DavvagApiManager::$logObject->apps->{$app}->path=REQUEST_PATH;
             DavvagApiManager::$logObject->apps->{$app}->entity=ENTITY;
-            DavvagApiManager::$logObject->apps->{$app}->starttime= date("Y-m-d").'T'.date("H:i:s");
-            DavvagApiManager::$logObject->apps->{$app}->lastexetime= date("Y-m-d").'T'.date("H:i:s");
+            DavvagApiManager::$logObject->apps->{$app}->starttime= $time;//date("Y-m-d").'T'.date("H:i:s");
+            DavvagApiManager::$logObject->apps->{$app}->lastexetime= $time;//date("Y-m-d").'T'.date("H:i:s");
             DavvagApiManager::$logObject->apps->{$app}->error=0;
             DavvagApiManager::$logObject->apps->{$app}->info=0;
             DavvagApiManager::$logObject->apps->{$app}->warning=0;
@@ -116,8 +123,8 @@ class DavvagApiManager {
             DavvagApiManager::$logObject->apps->{$app}->remoteaddr=IP;
             DavvagApiManager::$logObject->apps->{$app}->log=array();
         }
-        DavvagApiManager::$logObject->apps->{$app}->lastexetime= date("Y-m-d").'T'.date("H:i:s");
-        DavvagApiManager::$logObject->lastexetime= date("Y-m-d").'T'.date("H:i:s");
+        DavvagApiManager::$logObject->apps->{$app}->lastexetime= $time;//date("Y-m-d").'T'.date("H:i:s");
+        DavvagApiManager::$logObject->lastexetime= $time;//date("Y-m-d").'T'.date("H:i:s");
         switch($logtype){
             case "error":
                 DavvagApiManager::$logObject->apps->{$app}->error+=1;
@@ -133,7 +140,7 @@ class DavvagApiManager {
                 break;
         }
         $logitem =new stdClass();
-        $logitem->time= date("Y-m-d").'T'.date("H:i:s");
+        $logitem->time= $time;//date("Y-m-d").'T'.date("H:i:s");
         $logitem->type=$logtype;
         $logitem->message=$logstring;
         array_push(DavvagApiManager::$logObject->apps->{$app}->log,$logitem);

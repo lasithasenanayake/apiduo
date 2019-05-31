@@ -3,7 +3,7 @@
 //require_once (dirname(__FILE__) . "/../../configloader.php");
 
 class CacheData{
-    public static function getObjects($lastVersionId,$className){
+    public static function getObjects($lastVersionId,$className,$hours=1){
         try{
         $tenantId = ENTITY;
         $path = MEDIA_FOLDER . "/cache/".  ENTITY . "/".$className;
@@ -15,7 +15,7 @@ class CacheData{
         $path=$path."/".$lastVersionId.".chr";
         if (file_exists($path)){
             $timedif = (time() - filemtime($path));
-            if ($timedif < 3600*1) {
+            if ($timedif < 3600*$hours) {
                 $f = fopen($path, 'r');
                 $buffer = '';
                 while(!feof($f)) {

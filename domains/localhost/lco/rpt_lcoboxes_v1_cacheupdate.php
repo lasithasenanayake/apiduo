@@ -6,7 +6,7 @@ return function ($context){
     //try{
         $page=$request->Params()->page;
         $gulcoid=$request->Params()->gulcoid;
-        $rownumber=50;
+        $rownumber=100;
         $guuserid="";//$request->Params()->guuserid;
         $user="";//$request->Params()->user;
         $cacheid=$page."-".$gulcoid."-".$rownumber."-".$guuserid."-".$user;

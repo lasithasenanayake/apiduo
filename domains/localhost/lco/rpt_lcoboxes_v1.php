@@ -42,7 +42,7 @@ return function ($context){
         $page=$request->Params()->page;
         $gulcoid=$request->Params()->gulcoid;
         $cache=$request->Params()->cache;
-        $rownumber=50;
+        $rownumber=100;
         $guuserid="";//$request->Params()->guuserid;
         $user="";//$request->Params()->user;
         $cacheid=$page."-".$gulcoid."-".$rownumber."-".$guuserid."-".$user;
@@ -143,6 +143,7 @@ return function ($context){
                         $dataitem->DateofActivated =$item->DateofActivated;
                         $dataitem->TotalB2BAmount =floatval($item->TotalB2BAmount);
                         $dataitem->TotalB2CAmount =floatval($item->TotalB2CAmount);
+                        $dataitem->lastupdatedon =date("m-d-Y H:i:s");
                         array_push($updateprices,$dataitem);
                         
                         foreach ($item->BillingDetails as $pkey => $pval) {
@@ -169,7 +170,7 @@ return function ($context){
             CacheData::setObjects($cacheid,"box_calculation_v1",$mainDoc);
         }
         $mainDoc->Error=Migra($updateprices);
-        $mainDoc->ErrorDetails=MigraPkg($packagePrice);
+        //$mainDoc->ErrorDetails=MigraPkg($packagePrice);
         return  $mainDoc;
        
 }; 

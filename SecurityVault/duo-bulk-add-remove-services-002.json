@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"DUO-BULK-ADD-REMOVE",
+    "ApplicationType":"Console",
+    "AccessibleViews":["testView","getLcoBalance","get_vault_Block"]
+}

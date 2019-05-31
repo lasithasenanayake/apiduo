@@ -31,6 +31,7 @@ class SqlConnector{
         }
         //echo $this->GetBulKStatment($input);
         if( $this->dbcon ){
+            DavvagApiManager::log("mysql-bulksend","info","Start Bulk send operations");
             $stmt = sqlsrv_prepare($this->dbcon,$this->GetBulKStatment($input), array());
 
             if( !$stmt ) {
@@ -41,11 +42,14 @@ class SqlConnector{
             //var_dump($result);
             if( $result){
                 // Output params are now set,
+                DavvagApiManager::log("mysql-bulksend","info","End Bulk send operations");
+
                 $input->results=$result;
                 return $input; 
             }else{
                 //echo $this->GetBulKStatment($input);
-                
+                DavvagApiManager::log("mysql-bulksend","error",sqlsrv_errors()[0]["message"]);
+                //DavvagApiManager::log("mysql-bulksend","error",sqlsrv_errors()[0]["message"]);
                 throw new Exception(sqlsrv_errors()[0]["message"]);
             }
         }

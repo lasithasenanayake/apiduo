@@ -17,6 +17,10 @@ Class AccountRecahargeOp{
     $CheckAmount,
     $ChannelCount,
     $TotalChannelCount,$NCFVal){
+        $cacheObj=CacheData::getObjects($cacheid,"SP_PrePaid_Recharge_BasePack_NewTariff_V3",24);
+        if($cacheObj){
+            return $cacheObj;
+        }
         $ChannelCount=0;
         $TotalChannelCount=0;
         $NCFVal=0;
@@ -28,8 +32,7 @@ Class AccountRecahargeOp{
         @User = ?, @GetDate =?, @CheckAmount = ?,
         @ChannelCount=?,
         @TotalChannelCount=?,@NCFVal=?";
-        //echo $callsp->sql;
-                    
+
         $callsp->parameters=array(array($GUAccountID,SQLSRV_PARAM_IN),
             array($AccountNo,SQLSRV_PARAM_IN),
             array($ActivatedDate,SQLSRV_PARAM_IN),
@@ -47,11 +50,9 @@ Class AccountRecahargeOp{
             array($ChannelCount,SQLSRV_PARAM_IN),//GUAccountID
             array($TotalChannelCount,SQLSRV_PARAM_IN),
             array($NCFVal,SQLSRV_PARAM_IN));
-            
-            //var_dump($callsp->parameters);
-                        //$sqlUnit = $context->resolve("mssql:excute");
+            $cacheid=$VCNo;
             $results=$this->sqlUnit->process($callsp)->results;
-                        
+            CacheData::setObjects($cacheid,"SP_PrePaid_Recharge_BasePack_NewTariff_V3",$results);            
           return $results;
     }
 

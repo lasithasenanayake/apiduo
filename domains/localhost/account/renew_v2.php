@@ -28,7 +28,7 @@ return function ($context){
                 //var_dump("");
                 $renew =new AccountRenewOp($sqlUnit);
                 $obj= $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
-                $obj->log= DavvagApiManager::$logObject;
+                //$obj->log= DavvagApiManager::$logObject;
                 return $obj;//$renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
             }else{
                 //var_dump("");
@@ -37,7 +37,7 @@ return function ($context){
                 $sqlUnit = $context->resolve("mssql:excute");
                 $renew =new AccountRecahargeOp($sqlUnit);
                 $obj= $renew->CalacuteRenewPrices($Accountobject,$request->Params()->packagetype);
-                $obj->log= DavvagApiManager::$logObject;
+                //$obj->log= DavvagApiManager::$logObject;
                 return $obj;
             }
         }else{

@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"Bulk_Estimation_API",
+    "ApplicationType":"Console",
+    "AccessibleViews":["testView","getLcoBalance","get_vault_Block"]
+}
