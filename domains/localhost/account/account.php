@@ -1,5 +1,12 @@
 <?php
-
+        /**
+         * Developer :Lasitha Senanayake
+         * Date : May 10 2019
+         * Comments: Get Account Details for DEN 
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
 return function ($context){
     $request = $context->getRequest();
     //echo $request->Body();

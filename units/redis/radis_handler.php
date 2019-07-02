@@ -1,8 +1,17 @@
 <?php
+
 require_once  dirname(__FILE__) .  "/redisConnectionPool.php";
 
 
 class redisHandler extends AbstractUnit {
+    /**
+         * Developer :Lasitha Senanayake
+         * Date : May 1 2019
+         * Comments: Redis Handler
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
     private static $connpool;
     private $redis;
     /*

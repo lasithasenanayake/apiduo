@@ -3,6 +3,14 @@
 //require_once (dirname(__FILE__) . "/../../configloader.php");
 
 class CacheData{
+    /**
+         * Developer :Lasitha Senanayake
+         * Date : Aug 20 2018
+         * Comments: Php Cache
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
     public static function getObjects($lastVersionId,$className,$hours=1){
         try{
         $tenantId = ENTITY;

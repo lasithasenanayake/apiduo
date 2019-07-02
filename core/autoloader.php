@@ -1,6 +1,14 @@
 <?php
 
 class Autoloader {
+    /**
+         * Developer :Supun  Dissanayake
+         * Date : Feb 20 2018
+         * Comments: Config Manager 
+         * email :supuncodes@gmail.com
+         * github : https://github.com/supuncodes
+         * company: Duo Software  
+         */
     public static function load($className){
         $newName = Autoloader::toDashedCase($class);
         require_once ("./$class.php");

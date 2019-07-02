@@ -1,6 +1,5 @@
 <?php
-
-Class Ledger(){
+Class Ledger{
     private $context;
     
     function __construct($c){
@@ -8,36 +7,39 @@ Class Ledger(){
     }
 
     public function getBalance($type,$vaultid){
-        $redis = $context->resolve("redis:get");
+       /* $redis = $this->context->resolve("redis:get");
         $input=new stdClass();
-        $input->key="vault-".$request->Params()->vaultid."-".$type;
+        $input->key="vault-".ENTITY.$vaultid."-".$type;
         $cache=$redis->get($input->key);
         if(isset($cache)){
             return floatval($cache);
         }else{
             return $this->getDBbalance($type,$vaultid);
-        }
+        }*/
+        return $this->getDBbalance($type,$vaultid);
     }
 
     private function getDBbalance( $type,$vaultid){
-        $sqlUnit = $context->resolve("mssql:query");
+        $sqlUnit = $this->context->resolve("mssql:query");
         switch($type){
             case "lco":
-                $sql="SELECT (Balance-BlockAmount) As Balance FROM a_CODealerVault  WHERE GULCOID = '".$vaultid."'";
+                $sql="SELECT Balance As Balance FROM a_CODealerVault  WHERE GULCOID = '".$vaultid."'";
                 $dbobj= $sqlUnit->process($sql);
                 if($dbobj){
                     return floatval($dbobj[0]->Balance);
                 }else{
-                    throw new Exception('has No Balance For the provided Main Valutid '.$vaultid);
+                    return 0;
+                    //throw new Exception('has No Balance For the provided Main Valutid '.$vaultid);
                 }
                 break;
             case "acccount":
-                $sql="SELECT (Balance-BlockAmount) As Balance FROM a_CustomerVault  WHERE guaccountid = '".$vaultid."'";
+                $sql="SELECT Balance As Balance FROM a_CustomerVault  WHERE guaccountid = '".$vaultid."'";
                 $dbobj= $sqlUnit->process($sql);
                 if($dbobj){
                     return floatval($dbobj[0]->Balance);
                 }else{
-                    throw new Exception('has No Balance For the provided Valutid '.$vaultid);
+                    return 0;
+                    //throw new Exception('has No Balance For the provided Valutid '.$vaultid);
                 }
                 
                 break;

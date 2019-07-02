@@ -18,13 +18,15 @@ return function($context){
     array($objectBlock->gulcoid ,SQLSRV_PARAM_IN),//TransID
     array($objectBlock->guaccountid,SQLSRV_PARAM_IN),//VCno
     array($objectBlock->amount,SQLSRV_PARAM_IN));//GetDate
+    //try{
     $results=$sqlUnit->process($callsp)->results;
     if($results){
         $redis = $context->resolve("redis:get");
-        $redis->delete("vault-".$objectBlock->gulcoid."-lco");
+        $redis->delete("vault-".ENTITY.$objectBlock->gulcoid."-lco");
         return $results[0];
     }else{
-        throw new Exception("Insuficiant Balance or There is no vault for this id");
+        throw new Exception("Insufficient balance to deduct.");
     }
+    
 };
 ?>

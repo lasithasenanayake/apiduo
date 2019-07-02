@@ -1,5 +1,12 @@
 <?php
-
+ /**
+         * Developer :Lasitha Senanayake
+         * Date : May 1 2019
+         * Comments: API Mannger
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
 require_once (CORE_PATH. "/configuration_manager.php");
 require_once (CORE_PATH. "/route_manager.php");
 require_once (CORE_PATH. "/dispatcher.php");

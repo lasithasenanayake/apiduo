@@ -1,6 +1,13 @@
 <?php
 class CReq {
-
+	/**
+         * Developer :Supun  Dissanayake
+         * Date : Feb 20 2018
+         * Comments: Carbit 
+         * email :supuncodes@gmail.com
+         * github : https://github.com/supuncodes
+         * company: Duo Software  
+         */
 	public function Params(){return $this->p;}
 	public function Query(){return $this->qP;}
 	public function Headers(){return $this->hP;}
@@ -210,7 +217,7 @@ class Carbite {
 		$out = $res->Get();		
 		//var_dump($out);
 		if (isset($out)){
-			if (is_object($out) || is_array($out)){$ct = "application/json"; $out = json_encode($out, JSON_PRETTY_PRINT);}
+			if (is_object($out) || is_array($out)){$ct = "application/json"; $out = json_encode($out);}
 			else {if (strlen($out) > 0) if ($out[0] == '{') $ct = "application/json";}
 		}
 		

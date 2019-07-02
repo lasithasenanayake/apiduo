@@ -35,7 +35,7 @@ return function($context){
     //return getUser();
     $redis = $context->resolve("redis:get");
     $input=new stdClass();
-    $input->key="vault-".$request->Params()->vaultid."-".$type;
+    $input->key="vault-".ENTITY.$request->Params()->vaultid."-".$type;
     $cache=$redis->get($input->key);
     if(isset($cache)){
         return floatval($cache);

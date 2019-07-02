@@ -17,6 +17,7 @@ Class AccountRecahargeOp{
     $CheckAmount,
     $ChannelCount,
     $TotalChannelCount,$NCFVal){
+        $cacheid=$VCNo."-".$GUPackageID;
         $cacheObj=CacheData::getObjects($cacheid,"SP_PrePaid_Recharge_BasePack_NewTariff_V3",24);
         if($cacheObj){
             return $cacheObj;
@@ -50,7 +51,7 @@ Class AccountRecahargeOp{
             array($ChannelCount,SQLSRV_PARAM_IN),//GUAccountID
             array($TotalChannelCount,SQLSRV_PARAM_IN),
             array($NCFVal,SQLSRV_PARAM_IN));
-            $cacheid=$VCNo;
+            //$cacheid=$VCNo;
             $results=$this->sqlUnit->process($callsp)->results;
             CacheData::setObjects($cacheid,"SP_PrePaid_Recharge_BasePack_NewTariff_V3",$results);            
           return $results;
@@ -77,6 +78,11 @@ Class AccountRecahargeOp{
     $TotalChannelCount,
     $NCFVal,
     $Dateofactivation){
+        $cacheid=$VCNo."-".$GUPackageID;
+        $cacheObj=CacheData::getObjects($cacheid,"SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3",24);
+        if($cacheObj){
+            return $cacheObj;
+        }
         $ChannelCount=0;
         $TotalChannelCount=0;
         $NCFVal=0;
@@ -134,6 +140,7 @@ Class AccountRecahargeOp{
                         
                         $results=$this->sqlUnit->process($callsp)->results;
                         //$results->parameters=$callsp->parameters;
+                        CacheData::setObjects($cacheid,"SP_PrePaid_Recharge_Alacarte_NewTariff_SingleAla_V3",$results);
                         return $results;
     }
 

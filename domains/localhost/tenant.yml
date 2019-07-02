@@ -4,6 +4,12 @@ views:
     route: /version
     method: GET
     urn: file:test.php
+  
+  queryPods:  
+    route: /query/@query_file/
+    method: GET
+    urn: file:dynamic-pod.php
+    
 # LCO Related Services /lco/ <-- folder.
   getLcoBalance:
     route: /lco/balance/@lcocode
@@ -98,6 +104,21 @@ views:
     method: GET
     urn: file:vault/get_balance.php
 
+  get_vault_Balance:
+    route: /vault/@type/rollback/@id
+    method: GET
+    urn: file:vault/rollback.php
+
+  get_vault_ledger:
+    route: /vault/@type/ledger/@vaultid/@page
+    method: GET
+    urn: file:vault/get_ledger.php
+
+  get_vault_activeblocks:
+    route: /vault/@type/activeblocks/@vaultid
+    method: GET
+    urn: file:vault/get_activeblockes.php
+
   get_vault_Block:
     route: /vault/Block
     method: POST
@@ -115,3 +136,6 @@ configuration:
       UID: sa
       PWD: p@ssw0rd
       Database: dendb
+  redis:
+    servername: 172.16.8.70
+    port: 6379

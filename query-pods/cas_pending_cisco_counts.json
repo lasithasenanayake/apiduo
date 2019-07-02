@@ -1,0 +1,6 @@
+{
+    "cache":true,
+    "cachehours":1,
+    "parameters":["status"],
+    "sql":"select Count(0) as ActiveAccounts from a_CustAccountInformation where ServiceStatus='@status'"
+}

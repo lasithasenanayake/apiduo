@@ -3,7 +3,14 @@
 require_once (CORE_PATH . "/carbite.php");
 require_once (CORE_PATH . "/route_handler.php");
 class RouteManager {
-
+/**
+         * Developer :Supun  Dissanayake
+         * Date : Feb 20 2018
+         * Comments: Config Manager 
+         * email :supuncodes@gmail.com
+         * github : https://github.com/supuncodes
+         * company: Duo Software  
+         */
     public function loadTenantRoutes(){
         $this->createRoutesInCarbite();
     }

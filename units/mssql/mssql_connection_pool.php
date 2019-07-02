@@ -1,7 +1,14 @@
 <?php
 
 class MsSqlConnectionPool {
-    
+   /**
+         * Developer :Lasitha Senanayake
+         * Date : May 1 2019
+         * Comments: MS SQL Connection Pool
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
     private $dbcon;
 
     public function getConnection(){

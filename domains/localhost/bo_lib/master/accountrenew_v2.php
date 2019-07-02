@@ -18,6 +18,12 @@ Class AccountRenewOp{
         $ChannelCount=0;
         $TotalChannelCount=0;
         $NCFVal=0;
+        $cacheid=$vcno."-".$packageid;
+        $cacheObj=CacheData::getObjects($cacheid,"SP_PrePaid_Renew_BasePack_NewTariff_V3",24);
+        if($cacheObj){
+            return $cacheObj;
+        }
+
         $callsp =new stdClass();
         $callsp->name="SP_PrePaid_Renew_BasePack_NewTariff_V3";
         $callsp->sql="EXEC SP_PrePaid_Renew_BasePack_NewTariff_V3 @AccountNo = ?, @PeriodInMonths = ?,
@@ -43,7 +49,7 @@ Class AccountRenewOp{
             array($NCFVal,SQLSRV_PARAM_IN));
                         //$sqlUnit = $context->resolve("mssql:excute");
             $results=$this->sqlUnit->process($callsp)->results;
-                        
+            CacheData::setObjects($cacheid,"SP_PrePaid_Renew_BasePack_NewTariff_V3",$results);                                    
           return $results;
     }
 
@@ -67,6 +73,11 @@ Class AccountRenewOp{
         $ChannelCount=0;
         $TotalChannelCount=0;
         $NCFVal=0;
+        $cacheid=$vcno."-".$packagid;
+        $cacheObj=CacheData::getObjects($cacheid,"SP_PrePaid_Renew_Alacarte_NewTariff_V3",24);
+        if($cacheObj){
+            return $cacheObj;
+        }
         $callsp =new stdClass();
                         $callsp->name="SP_PrePaid_Renew_Alacarte_NewTariff_V3";
                         $callsp->sql="EXEC SP_PrePaid_Renew_Alacarte_NewTariff_V3 
@@ -101,8 +112,10 @@ Class AccountRenewOp{
                         //var_dump($callsp->parameters);
                         //var_dump($callsp->sql);
                         //$sqlUnit = $context->resolve("mssql:excute");
+                        $results=$this->sqlUnit->process($callsp)->results;
+                        CacheData::setObjects($cacheid,"SP_PrePaid_Renew_Alacarte_NewTariff_V3",$results);            
                         
-                        return $this->sqlUnit->process($callsp)->results;
+                        return $results;
     }
 
     public function CalacuteRenewPrices($Accountobject,$packagetype){

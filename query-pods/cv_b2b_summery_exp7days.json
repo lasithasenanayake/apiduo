@@ -1,0 +1,7 @@
+{
+    "cache":true,
+    "cachehours":1,
+    "entity":"report",
+    "parameters":[],
+    "sql":"select * from crystalvision_Summery_exp7days"
+}

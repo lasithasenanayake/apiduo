@@ -1,10 +1,12 @@
 <?php
-    //echo microtime();
-    //$t = microtime(true);
-    //$micro = sprintf("%06d",($t - floor($t)) * 1000000);
-    //$d = new DateTime( date('Y-m-d H:i:s.'.$micro, $t) );
-    
-    //print $d->format("Y-m-d").'T'.$d->format("H:i:s.u");
+    /**
+         * Developer :Lasitha Senanayake
+         * Date : May 1 2019
+         * Comments: API Service Initialition
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
 
     define ("BASE_PATH", dirname(__FILE__));
     define ("CORE_PATH", BASE_PATH . "/core");
@@ -15,7 +17,7 @@
     define ("SQL_CONNECTION_PATH",BASE_PATH . "/connections");
     define ("TENANT_RESOURCE_PATH", TENANT_PATH . "/localhost");
     define ("REQUEST_PATH", $_SERVER['REQUEST_URI']);
-    define ("LOGGER", true);
+    define ("LOGGER", false);
     date_default_timezone_set('UTC');
 
     $headers=getallheaders();

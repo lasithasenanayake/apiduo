@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"TESTING_LEDGER_APP",
+    "ApplicationType":"Desktop Application",
+    "AccessibleViews":["*"]
+}

@@ -1,4 +1,12 @@
 <?php
+        /**
+         * Developer :Lasitha Senanayake
+         * Date : May 28 2019
+         * Comments: CSV Caculation Download v1
+         * email :lasitha.senanayake@gmail.com
+         * github : https://github.com/lasithasenanayake
+         * company: Duo Software  
+         */
 function GetFromQuery($sqlstr){
     require_once(TENANT_RESOURCE_PATH."/sqlsvr/sqlsvr.php");
     $sql =new SqlConnector("report");

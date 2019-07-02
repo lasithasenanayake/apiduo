@@ -1,6 +1,6 @@
 {
     "servername":"172.16.8.82",
-    "username":"sa",
+    "username":"duo",
     "password":"p@ssw0rd",
     "dbname":"dendb"
 }

@@ -1,0 +1,5 @@
+{
+    "ApplicationKey":"DuoSMS_WIN_APP",
+    "ApplicationType":"Desktop Application",
+    "AccessibleViews":["*"]
+}
